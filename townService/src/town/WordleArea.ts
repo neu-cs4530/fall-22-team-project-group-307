@@ -7,12 +7,40 @@ export default class WordleArea extends InteractableArea {
 
   private _currentScore: number;
 
-  public get elapsedTimeSec() {
+  private _mainPlayer: Player | undefined;
+
+  private _spectatorPlayers: Player[];
+
+  public get isPlaying(): boolean {
+    return this._isPlaying;
+  }
+
+  public set isPlaying(value: boolean) {
+    this._isPlaying = value;
+  }
+
+  public get currentScore(): number {
     return this._currentScore;
   }
 
-  public get isPlaying() {
-    return this._isPlaying;
+  public set currentScore(value: number) {
+    this._currentScore = value;
+  }
+
+  public get mainPlayer(): Player | undefined {
+    return this._mainPlayer;
+  }
+
+  public set mainPlayer(newPlayer: Player | undefined) {
+    this._mainPlayer = newPlayer;
+  }
+
+  public get spectatorPlayers(): Player[] {
+    return this._spectatorPlayers;
+  }
+
+  public set spectatorPlayers(spectators: Player[]) {
+    this._spectatorPlayers = spectators;
   }
 
   /**
@@ -23,13 +51,15 @@ export default class WordleArea extends InteractableArea {
    * @param townEmitter a broadcast emitter that can be used to emit updates to players
    */
   public constructor(
-    { id, isPlaying, currentScore }: WordleAreaModel,
+    { id, isPlaying }: WordleAreaModel,
     coordinates: BoundingBox,
     townEmitter: TownEmitter,
   ) {
     super(id, coordinates, townEmitter);
-    this._currentScore = currentScore;
+    this._currentScore = 0;
     this._isPlaying = isPlaying;
+    this._mainPlayer = undefined;
+    this._spectatorPlayers = [];
   }
 
   /**
