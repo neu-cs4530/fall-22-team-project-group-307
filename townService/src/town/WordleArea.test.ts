@@ -13,11 +13,19 @@ describe('WordleArea', () => {
   const id = nanoid();
   const isPlaying = true;
   const currentScore = 1;
+  const guessHistory = ['AUDIO', 'STONE'];
+  const currentGuess = 'CHOR';
   const defaultCurrentScore = 0;
+  const defaultGuessHistory: string[] = [];
+  const defaultCurrentGuess = '';
 
   beforeEach(() => {
     mockClear(townEmitter);
-    testArea = new WordleArea({ id, isPlaying, currentScore }, testAreaBox, townEmitter);
+    testArea = new WordleArea(
+      { id, isPlaying, currentScore, guessHistory, currentGuess },
+      testAreaBox,
+      townEmitter,
+    );
     newPlayer = new Player(nanoid(), mock<TownEmitter>());
     testArea.add(newPlayer);
   });
@@ -48,6 +56,26 @@ describe('WordleArea', () => {
       testArea.mainPlayer = undefined;
       expect(testArea.mainPlayer).toEqual(undefined);
     });
+    it('Gets the initialized guessHistory value', () => {
+      expect(testArea.guessHistory).toEqual(defaultGuessHistory);
+    });
+    it('Sets the guessHistory value', () => {
+      testArea.guessHistory = ['FIRST'];
+      expect(testArea.guessHistory).toEqual(['FIRST']);
+      testArea.guessHistory = guessHistory;
+      expect(testArea.guessHistory).toEqual(guessHistory); // should this be like this (["AUDIO", "STONE"])
+      testArea.guessHistory = [];
+      expect(testArea.guessHistory).toEqual([]);
+    });
+    it('Gets the initialized currentGuess value', () => {
+      expect(testArea.currentGuess).toEqual(defaultCurrentGuess);
+    });
+    it('Sets the currentGuess value', () => {
+      testArea.currentGuess = currentGuess;
+      expect(testArea.currentGuess).toEqual(currentGuess); // should this be like this ("CHOR")
+      testArea.currentGuess = `${currentGuess}E`;
+      expect(testArea.currentGuess).toEqual(`${currentGuess}E`);
+    });
     it('Gets the initialized spectatorPlayers value', () => {
       expect(testArea.spectatorPlayers).toEqual([]);
     });
@@ -69,7 +97,13 @@ describe('WordleArea', () => {
 
       expect(testArea.occupantsByID).toEqual([extraPlayer.id]);
       const lastEmittedUpdate = getLastEmittedEvent(townEmitter, 'interactableUpdate');
-      expect(lastEmittedUpdate).toEqual({ id, isPlaying, currentScore: defaultCurrentScore });
+      expect(lastEmittedUpdate).toEqual({
+        id,
+        isPlaying,
+        currentScore: defaultCurrentScore,
+        guessHistory: defaultGuessHistory,
+        currentGuess: defaultCurrentGuess,
+      });
     });
     it("Clears the player's conversationLabel and emits an update for their location", () => {
       testArea.remove(newPlayer);
@@ -84,21 +118,33 @@ describe('WordleArea', () => {
         id,
         isPlaying: false,
         currentScore: defaultCurrentScore,
+        guessHistory: defaultGuessHistory,
+        currentGuess: defaultCurrentGuess,
       });
       expect(testArea.isPlaying).toEqual(false);
     });
   });
-  test('updateModel sets isPlaying and currentScore', () => {
-    testArea.updateModel({ id: 'ignore', isPlaying: false, currentScore: 2 });
+  test('updateModel sets isPlaying, currentScore, guessHistory, and currentGuess', () => {
+    testArea.updateModel({
+      id: 'ignore',
+      isPlaying: false,
+      currentScore: 2,
+      guessHistory: ['FIRST'],
+      currentGuess: 'NEXT',
+    });
     expect(testArea.isPlaying).toBe(false);
     expect(testArea.currentScore).toBe(2);
+    expect(testArea.guessHistory).toStrictEqual(['FIRST']);
+    expect(testArea.currentGuess).toBe('NEXT');
   });
-  test('toModel returns the ID, isPlaying and currentScore', () => {
+  test('toModel returns the ID, isPlaying, currentScore, guessHistory, and currentGuess', () => {
     const model = testArea.toModel();
     expect(model).toEqual({
       id,
       isPlaying,
       currentScore: defaultCurrentScore,
+      guessHistory: defaultGuessHistory,
+      currentGuess: defaultCurrentGuess,
     });
   });
 });
