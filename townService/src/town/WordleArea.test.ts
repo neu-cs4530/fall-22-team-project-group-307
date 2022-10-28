@@ -14,8 +14,6 @@ describe('WordleArea', () => {
   const isPlaying = true;
   const currentScore = 1;
   const guessHistory = ['AUDIO', 'STONE'];
-  const defaultCurrentScore = 0;
-  const defaultGuessHistory: string[] = [];
 
   beforeEach(() => {
     mockClear(townEmitter);
