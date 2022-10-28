@@ -7,6 +7,8 @@ export default class WordleArea extends InteractableArea {
 
   private _currentScore: number;
 
+  private _guessHistory: string[];
+
   private _mainPlayer: Player | undefined;
 
   private _spectatorPlayers: Player[];
@@ -25,6 +27,14 @@ export default class WordleArea extends InteractableArea {
 
   public set currentScore(value: number) {
     this._currentScore = value;
+  }
+
+  public get guessHistory(): string[] {
+    return this._guessHistory;
+  }
+
+  public set guessHistory(history: string[]) {
+    this._guessHistory = history;
   }
 
   public get mainPlayer(): Player | undefined {
@@ -51,13 +61,14 @@ export default class WordleArea extends InteractableArea {
    * @param townEmitter a broadcast emitter that can be used to emit updates to players
    */
   public constructor(
-    { id, isPlaying }: WordleAreaModel,
+    { id, isPlaying, currentScore, guessHistory }: WordleAreaModel,
     coordinates: BoundingBox,
     townEmitter: TownEmitter,
   ) {
     super(id, coordinates, townEmitter);
-    this._currentScore = 0;
+    this._currentScore = currentScore;
     this._isPlaying = isPlaying;
+    this._guessHistory = guessHistory;
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
   }
@@ -83,9 +94,10 @@ export default class WordleArea extends InteractableArea {
    *
    * @param viewingArea updated model
    */
-  public updateModel({ isPlaying, currentScore }: WordleAreaModel) {
+  public updateModel({ isPlaying, currentScore, guessHistory }: WordleAreaModel) {
     this._isPlaying = isPlaying;
     this._currentScore = currentScore;
+    this._guessHistory = guessHistory;
   }
 
   /**
@@ -97,6 +109,7 @@ export default class WordleArea extends InteractableArea {
       id: this.id,
       isPlaying: this._isPlaying,
       currentScore: this._currentScore,
+      guessHistory: this._guessHistory,
     };
   }
 }
