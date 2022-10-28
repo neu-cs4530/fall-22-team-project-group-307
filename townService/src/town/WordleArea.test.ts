@@ -39,11 +39,9 @@ describe('WordleArea', () => {
       expect(testArea.isPlaying).not.toEqual(isPlaying);
     });
     it('Gets the initialized currentScore value', () => {
-      expect(testArea.currentScore).toEqual(defaultCurrentScore); // should this be like this (0)
+      expect(testArea.currentScore).toEqual(currentScore);
     });
     it('Sets the currentScore value', () => {
-      testArea.currentScore = currentScore;
-      expect(testArea.currentScore).toEqual(currentScore);
       testArea.currentScore = currentScore + 1;
       expect(testArea.currentScore).toEqual(currentScore + 1);
     });
@@ -57,13 +55,11 @@ describe('WordleArea', () => {
       expect(testArea.mainPlayer).toEqual(undefined);
     });
     it('Gets the initialized guessHistory value', () => {
-      expect(testArea.guessHistory).toEqual(defaultGuessHistory);
+      expect(testArea.guessHistory).toEqual(guessHistory);
     });
     it('Sets the guessHistory value', () => {
-      testArea.guessHistory = ['FIRST'];
-      expect(testArea.guessHistory).toEqual(['FIRST']);
-      testArea.guessHistory = guessHistory;
-      expect(testArea.guessHistory).toEqual(guessHistory); // should this be like this (["AUDIO", "STONE"])
+      testArea.guessHistory = guessHistory.concat(['OTHER']);
+      expect(testArea.guessHistory).toEqual(guessHistory.concat(['OTHER']));
       testArea.guessHistory = [];
       expect(testArea.guessHistory).toEqual([]);
     });
@@ -72,7 +68,7 @@ describe('WordleArea', () => {
     });
     it('Sets the currentGuess value', () => {
       testArea.currentGuess = currentGuess;
-      expect(testArea.currentGuess).toEqual(currentGuess); // should this be like this ("CHOR")
+      expect(testArea.currentGuess).toEqual(currentGuess);
       testArea.currentGuess = `${currentGuess}E`;
       expect(testArea.currentGuess).toEqual(`${currentGuess}E`);
     });
@@ -100,8 +96,8 @@ describe('WordleArea', () => {
       expect(lastEmittedUpdate).toEqual({
         id,
         isPlaying,
-        currentScore: defaultCurrentScore,
-        guessHistory: defaultGuessHistory,
+        currentScore,
+        guessHistory,
         currentGuess: defaultCurrentGuess,
       });
     });
@@ -117,8 +113,8 @@ describe('WordleArea', () => {
       expect(lastEmittedUpdate).toEqual({
         id,
         isPlaying: false,
-        currentScore: defaultCurrentScore,
-        guessHistory: defaultGuessHistory,
+        currentScore,
+        guessHistory,
         currentGuess: defaultCurrentGuess,
       });
       expect(testArea.isPlaying).toEqual(false);
@@ -142,8 +138,8 @@ describe('WordleArea', () => {
     expect(model).toEqual({
       id,
       isPlaying,
-      currentScore: defaultCurrentScore,
-      guessHistory: defaultGuessHistory,
+      currentScore,
+      guessHistory,
       currentGuess: defaultCurrentGuess,
     });
   });
