@@ -14,10 +14,8 @@ describe('WordleArea', () => {
   const isPlaying = true;
   const currentScore = 1;
   const guessHistory = ['AUDIO', 'STONE'];
-  const currentGuess = 'CHOR';
   const defaultCurrentScore = 0;
   const defaultGuessHistory: string[] = [];
-  const defaultCurrentGuess = '';
 
   beforeEach(() => {
     mockClear(townEmitter);
@@ -89,7 +87,6 @@ describe('WordleArea', () => {
         isPlaying,
         currentScore,
         guessHistory,
-        currentGuess: defaultCurrentGuess,
       });
     });
     it("Clears the player's conversationLabel and emits an update for their location", () => {
@@ -106,12 +103,11 @@ describe('WordleArea', () => {
         isPlaying: false,
         currentScore,
         guessHistory,
-        currentGuess: defaultCurrentGuess,
       });
       expect(testArea.isPlaying).toEqual(false);
     });
   });
-  test('updateModel sets isPlaying, currentScore, guessHistory, and currentGuess', () => {
+  test('updateModel sets isPlaying, currentScore, and guessHistory', () => {
     testArea.updateModel({
       id: 'ignore',
       isPlaying: false,
@@ -122,14 +118,13 @@ describe('WordleArea', () => {
     expect(testArea.currentScore).toBe(2);
     expect(testArea.guessHistory).toStrictEqual(['FIRST']);
   });
-  test('toModel returns the ID, isPlaying, currentScore, guessHistory, and currentGuess', () => {
+  test('toModel returns the ID, isPlaying, currentScore, and guessHistory', () => {
     const model = testArea.toModel();
     expect(model).toEqual({
       id,
       isPlaying,
       currentScore,
       guessHistory,
-      currentGuess: defaultCurrentGuess,
     });
   });
 });
