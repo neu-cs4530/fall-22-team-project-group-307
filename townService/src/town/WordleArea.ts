@@ -9,8 +9,6 @@ export default class WordleArea extends InteractableArea {
 
   private _guessHistory: string[];
 
-  private _currentGuess: string;
-
   private _mainPlayer: Player | undefined;
 
   private _spectatorPlayers: Player[];
@@ -37,14 +35,6 @@ export default class WordleArea extends InteractableArea {
 
   public set guessHistory(history: string[]) {
     this._guessHistory = history;
-  }
-
-  public get currentGuess(): string {
-    return this._currentGuess;
-  }
-
-  public set currentGuess(guess: string) {
-    this._currentGuess = guess;
   }
 
   public get mainPlayer(): Player | undefined {
@@ -79,7 +69,6 @@ export default class WordleArea extends InteractableArea {
     this._currentScore = currentScore;
     this._isPlaying = isPlaying;
     this._guessHistory = guessHistory;
-    this._currentGuess = '';
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
   }
@@ -105,11 +94,10 @@ export default class WordleArea extends InteractableArea {
    *
    * @param viewingArea updated model
    */
-  public updateModel({ isPlaying, currentScore, guessHistory, currentGuess }: WordleAreaModel) {
+  public updateModel({ isPlaying, currentScore, guessHistory }: WordleAreaModel) {
     this._isPlaying = isPlaying;
     this._currentScore = currentScore;
     this._guessHistory = guessHistory;
-    this._currentGuess = currentGuess;
   }
 
   /**
@@ -122,7 +110,6 @@ export default class WordleArea extends InteractableArea {
       isPlaying: this._isPlaying,
       currentScore: this._currentScore,
       guessHistory: this._guessHistory,
-      currentGuess: this._currentGuess,
     };
   }
 }
