@@ -18,6 +18,7 @@ import {
 } from '../types/CoveyTownSocket';
 import { isConversationArea, isViewingArea } from '../types/TypeUtils';
 import ConversationAreaController from './ConversationAreaController';
+import WordleAreaController from './WordleAreaController';
 import PlayerController from './PlayerController';
 import ViewingAreaController from './ViewingAreaController';
 
@@ -69,6 +70,11 @@ export type TownEvents = {
    * the town controller's record of viewing areas.
    */
   viewingAreasChanged: (newViewingAreas: ViewingAreaController[]) => void;
+  /**
+   * An event that indicates that the set of WordleAreas has changed. This event is emitted after updating
+   * the town controller's record of Wordle Areas.
+   */
+  wordleAreasChanged: (newWordleArea: WordleAreaController[]) => void;
   /**
    * An event that indicates that a new chat message has been received, which is the parameter passed to the listener
    */

@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: Interactable[];
 }
 
-export type Interactable = ViewingArea | ConversationArea;
+export type Interactable = ViewingArea | ConversationArea | WordleArea;
 
 export type TownSettingsUpdate = {
   friendlyName?: string;
@@ -67,6 +67,12 @@ export interface ViewingArea {
   video?: string;
   isPlaying: boolean;
   elapsedTimeSec: number;
+}
+
+export interface WordleArea {
+  id: string;
+  isPlaying: boolean;
+  currentScore: number;
 }
 
 export interface ServerToClientEvents {
