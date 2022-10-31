@@ -804,7 +804,6 @@ export function useInteractable<T extends Interactable>(
 ): T | undefined {
   const townController = useTownController();
   const [interactable, setInteractable] = useState<T | undefined>(undefined);
-  console.log('useInteractable called');
   useEffect(() => {
     const onInteract = (interactWith: T) => {
       setInteractable(interactWith);

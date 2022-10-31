@@ -18,7 +18,6 @@ export default class WordleArea extends Interactable {
         )
         .setScrollFactor(0)
         .setDepth(30);
-      console.log('Show info');
     }
     this._infoTextBox.setVisible(true);
     this._infoTextBox.x = this.scene.scale.width / 2 - this._infoTextBox.width / 2;
@@ -29,7 +28,6 @@ export default class WordleArea extends Interactable {
   }
 
   interact(): void {
-    console.log('interact() called');
     this._infoTextBox?.setVisible(false);
   }
 
