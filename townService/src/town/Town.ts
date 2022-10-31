@@ -14,8 +14,10 @@ import {
   ServerToClientEvents,
   SocketData,
   ViewingArea as ViewingAreaModel,
+  WordleArea as WordleAreaModel,
 } from '../types/CoveyTownSocket';
 import ConversationArea from './ConversationArea';
+import WordleArea from './WordleArea';
 import InteractableArea from './InteractableArea';
 import ViewingArea from './ViewingArea';
 
@@ -284,6 +286,34 @@ export default class Town {
   }
 
   /**
+   * Creates a new wordle area in this town if there is not currently an active
+   * wordle area with the same ID. The wordle area ID must match the name of a
+   * wordle area that exists in this town's map, and the wordle area must not
+   * already have a video set.
+   *
+   * If successful creating the wordle area, this method:
+   *    Adds any players who are in the region defined by the wordle area to it
+   *    Notifies all players in the town that the wordle area has been updated by
+   *      emitting an interactableUpdate event
+   *
+   * @param wordleArea Information describing the wordle area to create.
+   *
+   * @returns True if the wordle area was created or false if there is no known
+   * wordle area with the specified ID or if there is already an active wordle area
+   * with the specified ID or if there is no video URL specified
+   */
+  public addWordleArea(wordleArea: WordleAreaModel): boolean {
+    const area = this._interactables.find(eachArea => eachArea.id === wordleArea.id) as WordleArea;
+    if (!area || !wordleArea.isPlaying || area.isPlaying) {
+      return false;
+    }
+    area.updateModel(wordleArea);
+    area.addPlayersWithinBounds(this._players);
+    this._broadcastEmitter.emit('interactableUpdate', area.toModel());
+    return true;
+  }
+
+  /**
    * Fetch a player's session based on the provided session token. Returns undefined if the
    * session token is not valid.
    *
@@ -346,13 +376,22 @@ export default class Town {
         ViewingArea.fromMapObject(eachViewingAreaObject, this._broadcastEmitter),
       );
 
+    const wordleAreas = objectLayer.objects
+      .filter(eachObject => eachObject.type === 'WordleArea')
+      .map(eachWordleAreaObject =>
+        WordleArea.fromMapObject(eachWordleAreaObject, this._broadcastEmitter),
+      );
+
     const conversationAreas = objectLayer.objects
       .filter(eachObject => eachObject.type === 'ConversationArea')
       .map(eachConvAreaObj =>
         ConversationArea.fromMapObject(eachConvAreaObj, this._broadcastEmitter),
       );
 
-    this._interactables = this._interactables.concat(viewingAreas).concat(conversationAreas);
+    this._interactables = this._interactables
+      .concat(viewingAreas)
+      .concat(conversationAreas)
+      .concat(wordleAreas);
     this._validateInteractables();
   }
 

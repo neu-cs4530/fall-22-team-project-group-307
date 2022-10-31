@@ -35,6 +35,7 @@ export default class WordleArea extends Interactable {
   interact(): void {
     if (this._wordleArea !== undefined) {
       this._wordleArea.isPlaying = true;
+      this._infoTextBox?.setVisible(false);
     }
   }
 
