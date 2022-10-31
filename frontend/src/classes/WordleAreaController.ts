@@ -15,9 +15,9 @@ export type WordleAreaEvents = {
 };
 
 /**
- * A WordleAreaController manages the local behavior of a conversation area in the frontend,
- * implementing the logic to bridge between the townService's interpretation of conversation areas and the
- * frontend's. The WordleAreaController emits events when the conversation area changes.
+ * A WordleAreaController manages the local behavior of a wordle area in the frontend,
+ * implementing the logic to bridge between the townService's interpretation of wordle areas and the
+ * frontend's. The WordleAreaController emits events when the wordle area changes.
  */
 export default class WordleAreaController extends (EventEmitter as new () => TypedEmitter<WordleAreaEvents>) {
   private _occupants: PlayerController[] = [];

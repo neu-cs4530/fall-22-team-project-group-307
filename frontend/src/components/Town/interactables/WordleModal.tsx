@@ -1,20 +1,22 @@
 import {
   Modal,
   Button,
+  ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
   useToast,
+  ModalFooter,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect } from 'react';
 import { useInteractable } from '../../../classes/TownController';
 import { WordleArea as WordleAreaModel } from '../../../types/CoveyTownSocket';
 import useTownController from '../../../hooks/useTownController';
-import WordleAreaInteractable from './WordleArea';
 
-function WordleModal({ wordleArea }: { wordleArea: WordleAreaInteractable }): JSX.Element {
+export default function WordleModal(): JSX.Element {
   const coveyTownController = useTownController();
+  const wordleArea = useInteractable('wordleArea');
 
   const isOpen = wordleArea !== undefined;
 
@@ -77,22 +79,16 @@ function WordleModal({ wordleArea }: { wordleArea: WordleAreaInteractable }): JS
       }}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create a wordle in {wordleArea?.name} </ModalHeader>
         <ModalCloseButton />
-        <Button colorScheme='blue' mr={3} onClick={createWordle}>
-          Create
-        </Button>
+        <ModalHeader>{wordleArea?.name} </ModalHeader>
+        <ModalBody>Would you like to start a game of Wordle in this area?</ModalBody>
+        <ModalFooter>
+          <Button colorScheme='blue' mr={3} onClick={createWordle}>
+            Create
+          </Button>
+          <Button onClick={closeModal}>Cancel</Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
-}
-
-export default function WordleModalWrapper(): JSX.Element {
-  const wordleArea = useInteractable<WordleAreaInteractable>('wordleArea');
-  if (wordleArea) {
-    console.log('Something is right....');
-    return <WordleModal wordleArea={wordleArea} />;
-  }
-  console.log('Something aint right.');
-  return <></>;
 }

@@ -713,6 +713,27 @@ export function useViewingAreaController(viewingAreaID: string): ViewingAreaCont
 }
 
 /**
+ * A react hook to retrieve a wordle area controller.
+ *
+ * This function will throw an error if the wordle area controller does not exist.
+ *
+ * This hook relies on the TownControllerContext.
+ *
+ * @param wordleAreaID The ID of the wordle area to retrieve the controller for
+ *
+ * @throws Error if there is no wordle area controller matching the specifeid ID
+ */
+export function useWordleAreaController(wordleAreaID: string): WordleAreaController {
+  const townController = useTownController();
+
+  const wordleArea = townController.wordleAreas.find(eachArea => eachArea.id == wordleAreaID);
+  if (!wordleArea) {
+    throw new Error(`Requested wordle area ${wordleAreaID} does not exist`);
+  }
+  return wordleArea;
+}
+
+/**
  * A react hook to retrieve the active conversation areas. This hook will re-render any components
  * that use it when the set of conversation areas changes. It does *not* re-render its dependent components
  * when the state of one of those areas changes - if that is desired, @see useConversationAreaTopic and @see useConversationAreaOccupants

@@ -1,10 +1,7 @@
-import WordleAreaController from '../../../classes/WordleAreaController';
 import Interactable, { KnownInteractableTypes } from '../Interactable';
 
 export default class WordleArea extends Interactable {
   private _infoTextBox?: Phaser.GameObjects.Text;
-
-  private _wordleArea?: WordleAreaController;
 
   getType(): KnownInteractableTypes {
     return 'wordleArea';
@@ -21,22 +18,19 @@ export default class WordleArea extends Interactable {
         )
         .setScrollFactor(0)
         .setDepth(30);
+      console.log('Show info');
     }
     this._infoTextBox.setVisible(true);
     this._infoTextBox.x = this.scene.scale.width / 2 - this._infoTextBox.width / 2;
   }
 
   overlap(): void {
-    if (this._wordleArea === undefined) {
-      this._showInfoBox();
-    }
+    this._showInfoBox();
   }
 
   interact(): void {
-    if (this._wordleArea !== undefined) {
-      this._wordleArea.isPlaying = true;
-      this._infoTextBox?.setVisible(false);
-    }
+    console.log('interact() called');
+    this._infoTextBox?.setVisible(false);
   }
 
   overlapExit(): void {
