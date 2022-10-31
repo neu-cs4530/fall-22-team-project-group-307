@@ -20,6 +20,7 @@ import {
 } from '../types/CoveyTownSocket';
 import ConversationArea from './ConversationArea';
 import Town from './Town';
+import WordleArea from './WordleArea';
 
 const mockTwilioVideo = mockDeep<TwilioVideo>();
 jest.spyOn(TwilioVideo, 'getInstance').mockReturnValue(mockTwilioVideo);
@@ -28,6 +29,37 @@ type TestMapDict = {
   [key in string]: ITiledMap;
 };
 const testingMaps: TestMapDict = {
+  oneWordle: {
+    tiledversion: '1.9.0',
+    tileheight: 32,
+    tilesets: [],
+    tilewidth: 32,
+    type: 'map',
+    layers: [
+      {
+        id: 123,
+        name: 'Objects',
+        objects: [
+          {
+            type: 'WordleArea',
+            height: 237,
+            id: 39,
+            name: 'WordleEx1',
+            rotation: 0,
+            visible: true,
+            width: 326,
+            x: 40,
+            y: 120,
+          },
+        ],
+        opacity: 1,
+        type: 'objectgroup',
+        visible: true,
+        x: 0,
+        y: 0,
+      },
+    ],
+  },
   twoConv: {
     tiledversion: '1.9.0',
     tileheight: 32,
@@ -506,6 +538,24 @@ describe('Town', () => {
         disconnectPlayer(playerTestData);
         expect(viewingArea.occupantsByID).toEqual([]);
       });
+
+      it('Removes the player from any active wordle area', () => {
+        // Load in a map with a conversation area
+        town.initializeFromMap(testingMaps.oneWordle);
+        playerTestData.moveTo(41, 121); // Inside of "WordleEx1" area
+        expect(
+          town.addWordleArea({
+            id: 'WordleEx1',
+            isPlaying: false,
+            currentScore: 0,
+            guessHistory: [],
+          }),
+        ).toBeTruthy();
+        const wordleArea = town.getInteractable('WordleEx1');
+        expect(wordleArea.occupantsByID).toEqual([player.id]);
+        disconnectPlayer(playerTestData);
+        expect(wordleArea.occupantsByID).toEqual([]);
+      });
     });
     describe('playerMovement', () => {
       const newLocation: PlayerLocation = {
@@ -628,6 +678,50 @@ describe('Town', () => {
           id: 'Name1',
           topic: newTopic,
           occupantsByID: [player.id],
+        });
+      });
+    });
+  });
+  describe('addWordleArea', () => {
+    beforeEach(async () => {
+      town.initializeFromMap(testingMaps.oneWordle);
+    });
+    it('Should return false if no area exists with that ID', () =>
+      expect(
+        town.addWordleArea({
+          id: nanoid(),
+          isPlaying: false,
+          currentScore: 0,
+          guessHistory: [],
+        }),
+      ).toEqual(false));
+    describe('When successful', () => {
+      beforeEach(() => {
+        playerTestData.moveTo(41, 121); // Inside of "WordleEx1" area
+        expect(
+          town.addWordleArea({
+            id: 'WordleEx1',
+            isPlaying: false,
+            currentScore: 0,
+            guessHistory: [],
+          }),
+        ).toEqual(true);
+      });
+      it('Should update the local model for that area', () => {
+        const wordleArea = town.getInteractable('WordleEx1') as WordleArea;
+        expect(wordleArea.currentScore).toEqual(0);
+      });
+      it('Should include any players in that area as occupants', () => {
+        const wordleArea = town.getInteractable('WordleEx1') as WordleArea;
+        expect(wordleArea.occupantsByID).toEqual([player.id]);
+      });
+      it('Should emit an interactableUpdate message', () => {
+        const lastEmittedUpdate = getLastEmittedEvent(townEmitter, 'interactableUpdate');
+        expect(lastEmittedUpdate).toEqual({
+          id: 'WordleEx1',
+          isPlaying: false,
+          currentScore: 0,
+          guessHistory: [],
         });
       });
     });

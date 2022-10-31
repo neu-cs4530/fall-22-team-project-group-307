@@ -4,7 +4,7 @@ import { BroadcastOperator } from 'socket.io';
 import IVideoClient from '../lib/IVideoClient';
 import Player from '../lib/Player';
 import TwilioVideo from '../lib/TwilioVideo';
-import { isViewingArea } from '../TestUtils';
+import { isViewingArea, isWordleArea } from '../TestUtils';
 import {
   ChatMessage,
   ConversationArea as ConversationAreaModel,
@@ -14,10 +14,12 @@ import {
   ServerToClientEvents,
   SocketData,
   ViewingArea as ViewingAreaModel,
+  WordleArea as WordleAreaModel,
 } from '../types/CoveyTownSocket';
 import ConversationArea from './ConversationArea';
 import InteractableArea from './InteractableArea';
 import ViewingArea from './ViewingArea';
+import WordleArea from './WordleArea';
 
 /**
  * The Town class implements the logic for each town: managing the various events that
@@ -155,6 +157,15 @@ export default class Town {
           (viewingArea as ViewingArea).updateModel(update);
         }
       }
+      if (isWordleArea(update)) {
+        newPlayer.townEmitter.emit('interactableUpdate', update);
+        const wordleArea = this._interactables.find(
+          eachInteractable => eachInteractable.id === update.id,
+        );
+        if (wordleArea) {
+          (wordleArea as WordleArea).updateModel(update);
+        }
+      }
     });
     return newPlayer;
   }
@@ -284,6 +295,33 @@ export default class Town {
   }
 
   /**
+   * Creates a new wordle area in this town if there is not currently an active
+   * wordle area with the same ID. The wordle area ID must match the name of a
+   * wordle area that exists in this town's map.
+   *
+   * If successful creating the wordle area, this method:
+   *    Adds any players who are in the region defined by the wordle area to it
+   *    Notifies all players in the town that the wordle area has been updated by
+   *      emitting an interactableUpdate event
+   *
+   * @param wordleArea Information describing the wordle area to create.
+   *
+   * @returns True if the wordle area was created or false if there is no known
+   * wordle area with the specified ID or if there is already an active wordle area
+   * with the specified ID or if there is no video URL specified
+   */
+  public addWordleArea(wordleArea: WordleAreaModel): boolean {
+    const area = this._interactables.find(eachArea => eachArea.id === wordleArea.id) as WordleArea;
+    if (!area) {
+      return false;
+    }
+    area.updateModel(wordleArea);
+    area.addPlayersWithinBounds(this._players);
+    this._broadcastEmitter.emit('interactableUpdate', area.toModel());
+    return true;
+  }
+
+  /**
    * Fetch a player's session based on the provided session token. Returns undefined if the
    * session token is not valid.
    *
@@ -352,7 +390,14 @@ export default class Town {
         ConversationArea.fromMapObject(eachConvAreaObj, this._broadcastEmitter),
       );
 
-    this._interactables = this._interactables.concat(viewingAreas).concat(conversationAreas);
+    const wordleAreas = objectLayer.objects
+      .filter(eachObject => eachObject.type === 'WordleArea')
+      .map(eachConvAreaObj => WordleArea.fromMapObject(eachConvAreaObj, this._broadcastEmitter));
+
+    this._interactables = this._interactables
+      .concat(viewingAreas)
+      .concat(conversationAreas)
+      .concat(wordleAreas);
     this._validateInteractables();
   }
 
