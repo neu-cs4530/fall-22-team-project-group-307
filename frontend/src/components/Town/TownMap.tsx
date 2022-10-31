@@ -5,7 +5,7 @@ import useTownController from '../../hooks/useTownController';
 import SocialSidebar from '../SocialSidebar/SocialSidebar';
 import NewConversationModal from './interactables/NewCoversationModal';
 import TownGameScene from './TownGameScene';
-import WordleModal from './interactables/WordleModal';
+import WordleAreaWrapper from './interactables/WordleModal';
 
 export default function TownMap(): JSX.Element {
   const coveyTownController = useTownController();
@@ -49,7 +49,7 @@ export default function TownMap(): JSX.Element {
   return (
     <div id='app-container'>
       <NewConversationModal />
-      <WordleModal />
+      <WordleAreaWrapper />
       <div id='map-container' />
       <div id='social-container'>
         <SocialSidebar />
