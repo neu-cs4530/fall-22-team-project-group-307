@@ -24,6 +24,7 @@ import {
   ViewingArea,
   WordleArea,
 } from './types/CoveyTownSocket';
+import WordleArea from './town/WordleArea';
 
 /**
  * Create a new conversation area using some random defaults
@@ -206,4 +207,8 @@ export function isWordleArea(interactable: Interactable): interactable is Wordle
 
 export function isConversationArea(interactable: Interactable): interactable is ConversationArea {
   return 'topic' in interactable;
+}
+
+export function isWordleArea(interactable: Interactable): interactable is WordleArea {
+  return 'currentScore' in interactable;
 }

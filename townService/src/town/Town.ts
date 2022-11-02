@@ -4,7 +4,7 @@ import { BroadcastOperator } from 'socket.io';
 import IVideoClient from '../lib/IVideoClient';
 import Player from '../lib/Player';
 import TwilioVideo from '../lib/TwilioVideo';
-import { isViewingArea } from '../TestUtils';
+import { isViewingArea, isWordleArea } from '../TestUtils';
 import {
   ChatMessage,
   ConversationArea as ConversationAreaModel,
@@ -20,6 +20,7 @@ import ConversationArea from './ConversationArea';
 import WordleArea from './WordleArea';
 import InteractableArea from './InteractableArea';
 import ViewingArea from './ViewingArea';
+import WordleArea from './WordleArea';
 
 /**
  * The Town class implements the logic for each town: managing the various events that
@@ -157,6 +158,15 @@ export default class Town {
           (viewingArea as ViewingArea).updateModel(update);
         }
       }
+      if (isWordleArea(update)) {
+        newPlayer.townEmitter.emit('interactableUpdate', update);
+        const wordleArea = this._interactables.find(
+          eachInteractable => eachInteractable.id === update.id,
+        );
+        if (wordleArea) {
+          (wordleArea as WordleArea).updateModel(update);
+        }
+      }
     });
     return newPlayer;
   }
@@ -288,8 +298,7 @@ export default class Town {
   /**
    * Creates a new wordle area in this town if there is not currently an active
    * wordle area with the same ID. The wordle area ID must match the name of a
-   * wordle area that exists in this town's map, and the wordle area must not
-   * already have a video set.
+   * wordle area that exists in this town's map.
    *
    * If successful creating the wordle area, this method:
    *    Adds any players who are in the region defined by the wordle area to it
@@ -387,7 +396,7 @@ export default class Town {
       .map(eachConvAreaObj =>
         ConversationArea.fromMapObject(eachConvAreaObj, this._broadcastEmitter),
       );
-
+      
     this._interactables = this._interactables
       .concat(viewingAreas)
       .concat(conversationAreas)
