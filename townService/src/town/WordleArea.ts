@@ -1,3 +1,4 @@
+import { ITiledMapObject } from '@jonbell/tiled-map-type-guard';
 import Player from '../lib/Player';
 import { BoundingBox, TownEmitter, WordleArea as WordleAreaModel } from '../types/CoveyTownSocket';
 import InteractableArea from './InteractableArea';
@@ -111,5 +112,27 @@ export default class WordleArea extends InteractableArea {
       currentScore: this._currentScore,
       guessHistory: this._guessHistory,
     };
+  }
+
+  /**
+   * Creates a new ConversationArea object that will represent a Conversation Area object in the town map.
+   * @param mapObject An ITiledMapObject that represents a rectangle in which this conversation area exists
+   * @param broadcastEmitter An emitter that can be used by this conversation area to broadcast updates
+   * @returns
+   */
+  public static fromMapObject(
+    mapObject: ITiledMapObject,
+    broadcastEmitter: TownEmitter,
+  ): WordleArea {
+    const { name, width, height } = mapObject;
+    if (!width || !height) {
+      throw new Error(`Malformed wordle area ${name}`);
+    }
+    const rect: BoundingBox = { x: mapObject.x, y: mapObject.y, width, height };
+    return new WordleArea(
+      { id: name, isPlaying: false, currentScore: 0, guessHistory: [] },
+      rect,
+      broadcastEmitter,
+    );
   }
 }
