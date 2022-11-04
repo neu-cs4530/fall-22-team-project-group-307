@@ -22,7 +22,6 @@ import {
   ServerToClientEvents,
   SocketData,
   ViewingArea,
-  WordleArea,
 } from './types/CoveyTownSocket';
 import WordleArea from './town/WordleArea';
 
@@ -199,10 +198,6 @@ export function expectArraysToContainSameMembers<T>(actual: T[], expected: T[]):
 
 export function isViewingArea(interactable: Interactable): interactable is ViewingArea {
   return 'elapsedTimeSec' in interactable;
-}
-
-export function isWordleArea(interactable: Interactable): interactable is WordleArea {
-  return 'guessHistory' in interactable;
 }
 
 export function isConversationArea(interactable: Interactable): interactable is ConversationArea {

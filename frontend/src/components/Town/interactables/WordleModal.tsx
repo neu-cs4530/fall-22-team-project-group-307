@@ -104,7 +104,7 @@ export function WordleAreaModal({
 
 /**
  * The WordleArea monitors the player's interaction with a WordleArea on the map: displaying either
- * a popup to set the video for a wordle area, or if the video is set, a video player.
+ * a popup to start wordle game, or if the game is already being played, the wordle game itself.
  *
  * @param props: the wordle area interactable that is being interacted with
  */
@@ -127,6 +127,7 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
     };
   }, [wordleAreaController, townController]);
 
+  // if the isPlaying property of the WordleArea in question is false, return the select modal
   if (!isPlaying) {
     return (
       <WordleAreaModal
@@ -136,9 +137,11 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
       />
     );
   }
+  //if true, then return the component representing the actual Wordle game
   return (
+    // placeholder
     <Box bg='tomato' w='100%' p={4} color='white'>
-      This is the Box
+      Placeholder
     </Box>
   );
 }

@@ -20,7 +20,6 @@ import ConversationArea from './ConversationArea';
 import WordleArea from './WordleArea';
 import InteractableArea from './InteractableArea';
 import ViewingArea from './ViewingArea';
-import WordleArea from './WordleArea';
 
 /**
  * The Town class implements the logic for each town: managing the various events that
@@ -396,7 +395,6 @@ export default class Town {
       .map(eachConvAreaObj =>
         ConversationArea.fromMapObject(eachConvAreaObj, this._broadcastEmitter),
       );
-      
     this._interactables = this._interactables
       .concat(viewingAreas)
       .concat(conversationAreas)
