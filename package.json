@@ -57,6 +57,7 @@
         "townService/src/town/TownsController.ts",
         "frontend/src/classes/TownController.ts",
         "frontend/src/classes/ConversationAreaController.ts",
+        "frontend/src/classes/WordleAreaController.ts",
         "frontend/src/classes/ConversationAreaController.test.ts",
         "frontend/src/classes/ViewingAreaController.ts",
         "frontend/src/classes/ViewingAreaController.test.ts",

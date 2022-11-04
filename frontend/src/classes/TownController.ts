@@ -15,8 +15,9 @@ import {
   PlayerLocation,
   TownSettingsUpdate,
   ViewingArea as ViewingAreaModel,
+  WordleArea as WordleAreaModel,
 } from '../types/CoveyTownSocket';
-import { isConversationArea, isViewingArea } from '../types/TypeUtils';
+import { isConversationArea, isViewingArea, isWordleArea } from '../types/TypeUtils';
 import ConversationAreaController from './ConversationAreaController';
 import WordleAreaController from './WordleAreaController';
 import PlayerController from './PlayerController';
@@ -74,7 +75,7 @@ export type TownEvents = {
    * An event that indicates that the set of WordleAreas has changed. This event is emitted after updating
    * the town controller's record of Wordle Areas.
    */
-  wordleAreasChanged: (newWordleArea: WordleAreaController[]) => void;
+  wordleAreasChanged: (newWordleAreas: WordleAreaController[]) => void;
   /**
    * An event that indicates that a new chat message has been received, which is the parameter passed to the listener
    */
@@ -196,6 +197,8 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
 
   private _viewingAreas: ViewingAreaController[] = [];
 
+  private _wordleAreas: WordleAreaController[] = [];
+
   public constructor({ userName, townID, loginController }: ConnectionProperties) {
     super();
     this._townID = townID;
@@ -313,6 +316,15 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   public set viewingAreas(newViewingAreas: ViewingAreaController[]) {
     this._viewingAreas = newViewingAreas;
     this.emit('viewingAreasChanged', newViewingAreas);
+  }
+
+  public get wordleAreas() {
+    return this._wordleAreas;
+  }
+
+  public set wordleAreas(newWordleAreas: WordleAreaController[]) {
+    this._wordleAreas = newWordleAreas;
+    this.emit('wordleAreasChanged', newWordleAreas);
   }
 
   /**
@@ -433,6 +445,11 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
           eachArea => eachArea.id === interactable.id,
         );
         updatedViewingArea?.updateFrom(interactable);
+      } else if (isWordleArea(interactable)) {
+        const updatedWordleArea = this._wordleAreas.find(
+          eachArea => eachArea.id === interactable.id,
+        );
+        updatedWordleArea?.updateFrom(interactable);
       }
     });
   }
@@ -515,6 +532,17 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   }
 
   /**
+   * Create a new Wordle area, sending the request to the townService. Throws an error if the request
+   * is not successful. Does not immediately update local state about the new Wordle area - it will be
+   * updated once the townService creates the area and emits an interactableUpdate
+   *
+   * @param newArea
+   */
+  async createWordleArea(newArea: WordleAreaModel) {
+    await this._townsService.createWordleArea(this.townID, this.sessionToken, newArea);
+  }
+
+  /**
    * Disconnect from the town, notifying the townService that we are leaving and returning
    * to the login page
    */
@@ -546,6 +574,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
 
         this._conversationAreas = [];
         this._viewingAreas = [];
+        this._wordleAreas = [];
         initialData.interactables.forEach(eachInteractable => {
           if (isConversationArea(eachInteractable)) {
             this._conversationAreasInternal.push(
@@ -556,6 +585,8 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
             );
           } else if (isViewingArea(eachInteractable)) {
             this._viewingAreas.push(new ViewingAreaController(eachInteractable));
+          } else if (isWordleArea(eachInteractable)) {
+            this._wordleAreas.push(new WordleAreaController(eachInteractable));
           }
         });
         this._userID = initialData.userID;
@@ -679,6 +710,27 @@ export function useViewingAreaController(viewingAreaID: string): ViewingAreaCont
     throw new Error(`Requested viewing area ${viewingAreaID} does not exist`);
   }
   return viewingArea;
+}
+
+/**
+ * A react hook to retrieve a wordle area controller.
+ *
+ * This function will throw an error if the wordle area controller does not exist.
+ *
+ * This hook relies on the TownControllerContext.
+ *
+ * @param wordleAreaID The ID of the wordle area to retrieve the controller for
+ *
+ * @throws Error if there is no wordle area controller matching the specifeid ID
+ */
+export function useWordleAreaController(wordleAreaID: string): WordleAreaController {
+  const townController = useTownController();
+
+  const wordleArea = townController.wordleAreas.find(eachArea => eachArea.id == wordleAreaID);
+  if (!wordleArea) {
+    throw new Error(`Requested wordle area ${wordleAreaID} does not exist`);
+  }
+  return wordleArea;
 }
 
 /**

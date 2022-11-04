@@ -93,7 +93,7 @@ export default class WordleArea extends InteractableArea {
   /**
    * Updates the state of this WordleArea, setting the active state, players, and game state
    *
-   * @param viewingArea updated model
+   * @param wordleArea updated model
    */
   public updateModel({ isPlaying, currentScore, guessHistory }: WordleAreaModel) {
     this._isPlaying = isPlaying;
@@ -115,24 +115,21 @@ export default class WordleArea extends InteractableArea {
   }
 
   /**
-   * Creates a new ConversationArea object that will represent a Conversation Area object in the town map.
-   * @param mapObject An ITiledMapObject that represents a rectangle in which this conversation area exists
-   * @param broadcastEmitter An emitter that can be used by this conversation area to broadcast updates
+   * Creates a new WordleArea object that will represent a Viewing Area object in the town map.
+   * @param mapObject An ITiledMapObject that represents a rectangle in which this viewing area exists
+   * @param townEmitter An emitter that can be used by this viewing area to broadcast updates to players in the town
    * @returns
    */
-  public static fromMapObject(
-    mapObject: ITiledMapObject,
-    broadcastEmitter: TownEmitter,
-  ): WordleArea {
+  public static fromMapObject(mapObject: ITiledMapObject, townEmitter: TownEmitter): WordleArea {
     const { name, width, height } = mapObject;
     if (!width || !height) {
       throw new Error(`Malformed wordle area ${name}`);
     }
     const rect: BoundingBox = { x: mapObject.x, y: mapObject.y, width, height };
     return new WordleArea(
-      { id: name, isPlaying: false, currentScore: 0, guessHistory: [] },
+      { isPlaying: false, id: name, currentScore: 0, guessHistory: [] },
       rect,
-      broadcastEmitter,
+      townEmitter,
     );
   }
 }

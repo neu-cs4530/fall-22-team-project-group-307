@@ -22,8 +22,8 @@ import {
   CoveyTownSocket,
   TownSettingsUpdate,
   ViewingArea,
+  WordleArea,
 } from '../types/CoveyTownSocket';
-import WordleArea from './WordleArea';
 
 /**
  * This is the town route

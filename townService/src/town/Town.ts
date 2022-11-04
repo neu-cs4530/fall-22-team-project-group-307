@@ -17,9 +17,9 @@ import {
   WordleArea as WordleAreaModel,
 } from '../types/CoveyTownSocket';
 import ConversationArea from './ConversationArea';
+import WordleArea from './WordleArea';
 import InteractableArea from './InteractableArea';
 import ViewingArea from './ViewingArea';
-import WordleArea from './WordleArea';
 
 /**
  * The Town class implements the logic for each town: managing the various events that
@@ -308,11 +308,11 @@ export default class Town {
    *
    * @returns True if the wordle area was created or false if there is no known
    * wordle area with the specified ID or if there is already an active wordle area
-   * with the specified ID or if there is no video URL specified
+   * with the specified ID
    */
   public addWordleArea(wordleArea: WordleAreaModel): boolean {
     const area = this._interactables.find(eachArea => eachArea.id === wordleArea.id) as WordleArea;
-    if (!area) {
+    if (!area || area.isPlaying) {
       return false;
     }
     area.updateModel(wordleArea);
@@ -384,16 +384,17 @@ export default class Town {
         ViewingArea.fromMapObject(eachViewingAreaObject, this._broadcastEmitter),
       );
 
+    const wordleAreas = objectLayer.objects
+      .filter(eachObject => eachObject.type === 'WordleArea')
+      .map(eachWordleAreaObject =>
+        WordleArea.fromMapObject(eachWordleAreaObject, this._broadcastEmitter),
+      );
+
     const conversationAreas = objectLayer.objects
       .filter(eachObject => eachObject.type === 'ConversationArea')
       .map(eachConvAreaObj =>
         ConversationArea.fromMapObject(eachConvAreaObj, this._broadcastEmitter),
       );
-
-    const wordleAreas = objectLayer.objects
-      .filter(eachObject => eachObject.type === 'WordleArea')
-      .map(eachConvAreaObj => WordleArea.fromMapObject(eachConvAreaObj, this._broadcastEmitter));
-
     this._interactables = this._interactables
       .concat(viewingAreas)
       .concat(conversationAreas)
