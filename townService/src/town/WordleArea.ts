@@ -4,6 +4,8 @@ import { BoundingBox, TownEmitter, WordleArea as WordleAreaModel } from '../type
 import InteractableArea from './InteractableArea';
 
 export default class WordleArea extends InteractableArea {
+  private _solution: string;
+
   private _isPlaying: boolean;
 
   private _currentScore: number;
@@ -13,6 +15,14 @@ export default class WordleArea extends InteractableArea {
   private _mainPlayer: Player | undefined;
 
   private _spectatorPlayers: Player[];
+
+  public get solution(): string {
+    return this._solution;
+  }
+
+  public set solution(value: string) {
+    this._solution = value;
+  }
 
   public get isPlaying(): boolean {
     return this._isPlaying;
@@ -72,6 +82,8 @@ export default class WordleArea extends InteractableArea {
     this._guessHistory = guessHistory;
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
+    // TODO: take out hardcoding
+    this._solution = 'guess';
   }
 
   /**
