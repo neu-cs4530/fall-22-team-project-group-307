@@ -23,7 +23,7 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "rootDirs": [
       "./src/",
       "./generated/"
