@@ -1,20 +1,29 @@
 import {
-  Modal,
   Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   useToast,
-  ModalFooter,
-  Box,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useInteractable, useWordleAreaController } from '../../../classes/TownController';
-import { WordleArea as WordleAreaModel } from '../../../types/CoveyTownSocket';
 import useTownController from '../../../hooks/useTownController';
+import { WordleArea as WordleAreaModel } from '../../../types/CoveyTownSocket';
 import WordleAreaInteractable from './WordleArea';
+import Board from './WordleBoard';
+
+interface Guess {
+  key: string;
+  color: string;
+}
 
 export function WordleAreaModal({
   isOpen,
@@ -113,6 +122,13 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
   const wordleAreaController = useWordleAreaController(wordleArea.name);
   const [selectIsOpen, setSelectIsOpen] = useState(!wordleAreaController.isPlaying);
   const [isPlaying, setIsPlaying] = useState(wordleAreaController.isPlaying);
+
+  const closeModal = useCallback(() => {
+    if (wordleArea) {
+      close();
+    }
+  }, [close, townController, wordleArea]);
+
   useEffect(() => {
     const setPlaying = (newIsPlaying: boolean) => {
       if (!newIsPlaying) {
@@ -137,12 +153,25 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
       />
     );
   }
+
   //if true, then return the component representing the actual Wordle game
   return (
-    // placeholder
-    <Box bg='tomato' w='100%' p={4} color='white'>
-      Placeholder
-    </Box>
+    <Modal isOpen={true} onClose={closeModal}>
+      <ModalBody>
+        <Flex
+          flexDir='column'
+          height='100%'
+          overflow={'hidden'}
+          alignItems='center'
+          justifyContent='space-evenly'>
+          <Board guesses={wordleAreaController.guessHistory} />
+        </Flex>
+        <FormControl>
+          <FormLabel>Guess Field</FormLabel>
+          <Input placeholder='Input guess here!' />
+        </FormControl>
+      </ModalBody>
+    </Modal>
   );
 }
 

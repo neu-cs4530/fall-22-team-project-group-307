@@ -55,6 +55,20 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
   }
 
   /**
+   * Gets the guess history from the current wordle game.
+   */
+  public get guessHistory() {
+    return this._model.guessHistory;
+  }
+
+  /**
+   * Sets the guess history from the current wordle game.
+   */
+  public set guessHistory(newHistory: string[]) {
+    this._model.guessHistory = newHistory;
+  }
+
+  /**
    * The ID of this wordle area (read only)
    */
   get id() {
