@@ -4,6 +4,10 @@ import { BoundingBox, TownEmitter, WordleArea as WordleAreaModel } from '../type
 import InteractableArea from './InteractableArea';
 
 export default class WordleArea extends InteractableArea {
+  private _wordLength = 5;
+
+  private _maxGuesses = 6;
+
   private _solution: string;
 
   private _isPlaying: boolean;
@@ -82,8 +86,37 @@ export default class WordleArea extends InteractableArea {
     this._guessHistory = guessHistory;
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
-    // TODO: take out hardcoding
-    this._solution = 'guess';
+    this._solution = this._generateSolution();
+  }
+
+  private _generateSolution(): string {
+    const thisVariable = `is to silence errors for a bit${this.solution}`;
+    return thisVariable;
+  }
+
+  public isGameWon(): boolean {
+    return this.guessHistory[this.guessHistory.length - 1] === this.solution;
+  }
+
+  public isGameLost(): boolean {
+    return !this.isGameWon() && this.guessHistory.length >= this._maxGuesses;
+  }
+
+  public addGuess(guess: string) {
+    if (this.isGameWon() || this.isGameLost()) {
+      throw new Error('Guess cannot be made on a finished game');
+    } else if (guess.length !== this._wordLength) {
+      throw new Error(`Given guess is not of length ${this._wordLength} (length: ${guess.length})`);
+    } else if (!this._isGuessInDictionary(guess)) {
+      throw new Error(`Given word '${guess}' is not a word in the dictionary`);
+    }
+  }
+
+  private _isGuessInDictionary(guess: string): boolean {
+    guess = guess.toLocaleLowerCase();
+    const thisVariable = `is to silence errors for a bit${this.solution}`;
+    // TODO: text file access
+    return true;
   }
 
   /**
