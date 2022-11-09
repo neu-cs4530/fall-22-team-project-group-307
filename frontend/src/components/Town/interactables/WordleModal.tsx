@@ -1,9 +1,5 @@
 import {
   Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,7 +14,7 @@ import { useInteractable, useWordleAreaController } from '../../../classes/TownC
 import useTownController from '../../../hooks/useTownController';
 import { WordleArea as WordleAreaModel } from '../../../types/CoveyTownSocket';
 import WordleAreaInteractable from './WordleArea';
-import Board from './WordleBoard';
+import WordleGame from './WordleGame';
 
 interface Guess {
   key: string;
@@ -27,11 +23,9 @@ interface Guess {
 
 export function WordleAreaModal({
   isOpen,
-  close,
   wordleArea,
 }: {
   isOpen: boolean;
-  close: () => void;
   wordleArea: WordleAreaInteractable;
 }): JSX.Element {
   const coveyTownController = useTownController();
@@ -46,11 +40,10 @@ export function WordleAreaModal({
 
   const closeModal = useCallback(() => {
     if (wordleArea) {
-      close();
       coveyTownController.interactEnd(wordleArea);
       coveyTownController.unPause();
     }
-  }, [close, coveyTownController, wordleArea]);
+  }, [coveyTownController, wordleArea]);
 
   const toast = useToast();
 
@@ -93,7 +86,6 @@ export function WordleAreaModal({
       isOpen={isOpen}
       onClose={() => {
         closeModal();
-        coveyTownController.unPause();
       }}>
       <ModalOverlay />
       <ModalContent>
@@ -120,14 +112,14 @@ export function WordleAreaModal({
 export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable }): JSX.Element {
   const townController = useTownController();
   const wordleAreaController = useWordleAreaController(wordleArea.name);
-  const [selectIsOpen, setSelectIsOpen] = useState(!wordleAreaController.isPlaying);
   const [isPlaying, setIsPlaying] = useState(wordleAreaController.isPlaying);
 
   const closeModal = useCallback(() => {
     if (wordleArea) {
-      close();
+      townController.interactEnd(wordleArea);
+      townController.unPause();
     }
-  }, [close, townController, wordleArea]);
+  }, [townController, wordleArea]);
 
   useEffect(() => {
     const setPlaying = (newIsPlaying: boolean) => {
@@ -145,34 +137,11 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
 
   // if the isPlaying property of the WordleArea in question is false, return the select modal
   if (!isPlaying) {
-    return (
-      <WordleAreaModal
-        isOpen={selectIsOpen}
-        close={() => setSelectIsOpen(false)}
-        wordleArea={wordleArea}
-      />
-    );
+    return <WordleAreaModal isOpen={!isPlaying} wordleArea={wordleArea} />;
   }
 
   //if true, then return the component representing the actual Wordle game
-  return (
-    <Modal isOpen={true} onClose={closeModal}>
-      <ModalBody>
-        <Flex
-          flexDir='column'
-          height='100%'
-          overflow={'hidden'}
-          alignItems='center'
-          justifyContent='space-evenly'>
-          <Board guesses={wordleAreaController.guessHistory} />
-        </Flex>
-        <FormControl>
-          <FormLabel>Guess Field</FormLabel>
-          <Input placeholder='Input guess here!' />
-        </FormControl>
-      </ModalBody>
-    </Modal>
-  );
+  return <WordleGame wordleArea={wordleArea} closeGame={closeModal} />;
 }
 
 /**
