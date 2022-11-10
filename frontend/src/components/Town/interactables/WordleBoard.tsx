@@ -57,7 +57,6 @@ const Board = ({ guesses }: BoardProps) => {
       });
       return result;
     }
-
     const converted: GuessLetter[] = [...toConvert].map((character, i) => {
       // color check
       let color = 'gray'; // default color
@@ -76,24 +75,15 @@ const Board = ({ guesses }: BoardProps) => {
     return converted;
   };
 
-  // iterate through each guess and convert it to a GuessLetter[]
-  const allFormattedGuesses = Array<GuessLetter[]>();
-  guesses.map(guess => {
-    allFormattedGuesses.push(convertGuess(guess));
+  // iterate through each guess and convert it to a GuessLetter
+  const allFormattedGuesses = Array<GuessLetter[]>(6).fill(convertGuess(undefined));
+  guesses.map((eachGuess, i) => {
+    allFormattedGuesses[i] = convertGuess(eachGuess);
   });
-
-  //TODO: implement guess submission
-  const testGuesses = Array<GuessLetter[]>();
-  testGuesses.push(convertGuess('rhyme'));
-  testGuesses.push(convertGuess('sight'));
-  testGuesses.push(convertGuess('guess'));
-  testGuesses.push(convertGuess(undefined));
-  testGuesses.push(convertGuess(undefined));
-  testGuesses.push(convertGuess(undefined));
 
   return (
     <VStack>
-      {testGuesses.map((guess, index) => {
+      {allFormattedGuesses.map((guess, index) => {
         return <Row key={index} guess={guess} />;
       })}
     </VStack>

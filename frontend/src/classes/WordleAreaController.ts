@@ -12,6 +12,7 @@ export type WordleAreaEvents = {
   scoreChange: (newScore: number) => void;
   occupantsChange: (newOccupants: PlayerController[]) => void;
   playingChange: (newPlaying: boolean) => void;
+  historyChange: (newHistory: string[]) => void;
 };
 
 /**
@@ -65,7 +66,10 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
    * Sets the guess history from the current wordle game.
    */
   public set guessHistory(newHistory: string[]) {
-    this._model.guessHistory = newHistory;
+    if (this._model.guessHistory !== newHistory) {
+      this.emit('historyChange', newHistory);
+      this._model.guessHistory = newHistory;
+    }
   }
 
   /**
