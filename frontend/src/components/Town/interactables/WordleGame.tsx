@@ -1,7 +1,6 @@
 import {
   Flex,
   FormControl,
-  FormLabel,
   Input,
   Modal,
   ModalBody,
@@ -28,7 +27,6 @@ export default function WordleGame({
   const wordleAreaController = useWordleAreaController(wordleArea.name);
 
   const [guessHistory, setGuessHistory] = useState(wordleAreaController.guessHistory);
-  const [currGuess, setCurrGuess] = React.useState('');
 
   useEffect(() => {
     const setHistory = (newHistory: string[]) => {
@@ -94,8 +92,11 @@ export default function WordleGame({
             <Board guesses={guessHistory} />
           </Flex>
           <FormControl>
-            <FormLabel>history: {guessHistory}</FormLabel>
-            <Input maxLength={5} placeholder='Input guess here!' onKeyDown={handleSubmit} />
+            <Input
+              maxLength={5}
+              placeholder='Input your five-letter guess here!'
+              onKeyDown={handleSubmit}
+            />
           </FormControl>
         </ModalBody>
       </ModalContent>
