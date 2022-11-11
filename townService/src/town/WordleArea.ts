@@ -89,17 +89,33 @@ export default class WordleArea extends InteractableArea {
     this._guessHistory = guessHistory;
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
-    this._solution = DataAccess.getValidWord(this._wordLength, true);
+    this._solution = '';
+    DataAccess.getValidWord(this._wordLength, true).then(value => {
+      this._solution = value;
+    });
   }
 
+  /**
+   * Checks if the game is currently in a state which references a player win.
+   * @returns if the player has won
+   */
   public isGameWon(): boolean {
     return this.guessHistory[this.guessHistory.length - 1] === this.solution;
   }
 
+  /**
+   * Checks if the game is currently in a state which references a player loss.
+   * @returns if the player has lost
+   */
   public isGameLost(): boolean {
     return !this.isGameWon() && this.guessHistory.length >= this._maxGuesses;
   }
 
+  /**
+   * Adds a guess to this game.
+   * @param guess the full entered guess from the user
+   * @throws if the game is over, the guess is not a valid length, or the guess is not a valid word
+   */
   public addGuess(guess: string) {
     if (this.isGameWon() || this.isGameLost()) {
       throw new Error('Guess cannot be made on a finished game');

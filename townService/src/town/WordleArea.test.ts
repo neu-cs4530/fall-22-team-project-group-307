@@ -8,6 +8,7 @@ import WordleArea from './WordleArea';
 describe('WordleArea', () => {
   const testAreaBox = { x: 100, y: 100, width: 100, height: 100 };
   let testArea: WordleArea;
+  let blankTestArea: WordleArea;
   const townEmitter = mock<TownEmitter>();
   let newPlayer: Player;
   const id = nanoid();
@@ -19,6 +20,11 @@ describe('WordleArea', () => {
     mockClear(townEmitter);
     testArea = new WordleArea(
       { id, isPlaying, currentScore, guessHistory },
+      testAreaBox,
+      townEmitter,
+    );
+    blankTestArea = new WordleArea(
+      { id: nanoid(), isPlaying: true, currentScore, guessHistory: [] },
       testAreaBox,
       townEmitter,
     );
@@ -69,6 +75,29 @@ describe('WordleArea', () => {
       expect(testArea.spectatorPlayers).toEqual([newPlayer, newPlayer]);
       testArea.spectatorPlayers = [];
       expect(testArea.spectatorPlayers).toEqual([]);
+    });
+  });
+  describe('isGameWon', () => {
+    it('Returns false on an empty game', () => {
+      expect(blankTestArea.isGameWon()).toBeFalsy();
+    });
+    it('Returns false on an non-empty but in-progress game', () => {
+      testArea.solution = 'WRONG';
+      expect(testArea.isGameWon()).toBeFalsy();
+    });
+    it('Returns false on a finished game loss', () => {
+      blankTestArea.solution = 'RIGHT';
+      for (let i = 0; i < 6; i++) {
+        blankTestArea.addGuess('WRONG');
+      }
+      expect(testArea.isGameWon()).toBeFalsy();
+    });
+    it('Returns true on a finished game win', () => {
+      blankTestArea.solution = 'RIGHT';
+      blankTestArea.addGuess('WRONG');
+      expect(testArea.isGameWon()).toBeFalsy();
+      blankTestArea.addGuess('RIGHT');
+      expect(testArea.isGameWon()).toBeTruthy();
     });
   });
   describe('remove', () => {
