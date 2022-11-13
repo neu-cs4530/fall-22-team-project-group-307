@@ -28,7 +28,7 @@ export default class WordleArea extends InteractableArea {
   }
 
   public set solution(value: string) {
-    this._solution = value;
+    this._solution = value.toUpperCase();
   }
 
   public get isPlaying(): boolean {
@@ -89,10 +89,7 @@ export default class WordleArea extends InteractableArea {
     this._guessHistory = guessHistory;
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
-    this._solution = '';
-    DataAccess.getValidWord(this._wordLength, true).then(value => {
-      this._solution = value;
-    });
+    this._solution = DataAccess.getAccess().getValidWord(5);
   }
 
   /**
@@ -121,7 +118,7 @@ export default class WordleArea extends InteractableArea {
       throw new Error('Guess cannot be made on a finished game');
     } else if (guess.length !== this._wordLength) {
       throw new Error(`Given guess is not of length ${this._wordLength} (length: ${guess.length})`);
-    } else if (!DataAccess.isValidWord(guess)) {
+    } else if (!DataAccess.getAccess().isValidWord(guess)) {
       throw new Error(`Given word '${guess}' is not a word in the dictionary`);
     }
 

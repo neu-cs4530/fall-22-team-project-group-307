@@ -13,7 +13,7 @@ describe('WordleArea', () => {
   let newPlayer: Player;
   const id = nanoid();
   const isPlaying = true;
-  const currentScore = 1;
+  const currentScore = 8;
   const guessHistory = ['AUDIO', 'STONE'];
 
   beforeEach(() => {
@@ -90,14 +90,63 @@ describe('WordleArea', () => {
       for (let i = 0; i < 6; i++) {
         blankTestArea.addGuess('WRONG');
       }
-      expect(testArea.isGameWon()).toBeFalsy();
+      expect(blankTestArea.isGameWon()).toBeFalsy();
     });
     it('Returns true on a finished game win', () => {
       blankTestArea.solution = 'RIGHT';
       blankTestArea.addGuess('WRONG');
-      expect(testArea.isGameWon()).toBeFalsy();
+      expect(blankTestArea.isGameWon()).toBeFalsy();
       blankTestArea.addGuess('RIGHT');
-      expect(testArea.isGameWon()).toBeTruthy();
+      expect(blankTestArea.isGameWon()).toBeTruthy();
+    });
+  });
+  describe('isGameLost', () => {
+    it('Returns false on an empty game', () => {
+      expect(blankTestArea.isGameLost()).toBeFalsy();
+    });
+    it('Returns false on an non-empty but in-progress game', () => {
+      testArea.solution = 'WRONG';
+      expect(testArea.isGameLost()).toBeFalsy();
+    });
+    it('Returns false on a finished game win', () => {
+      blankTestArea.solution = 'RIGHT';
+      blankTestArea.addGuess('RIGHT');
+      expect(blankTestArea.isGameLost()).toBeFalsy();
+    });
+    it('Returns true on a finished game loss', () => {
+      blankTestArea.solution = 'RIGHT';
+      for (let i = 0; i < 6; i++) {
+        blankTestArea.addGuess('WRONG');
+      }
+      expect(blankTestArea.isGameLost()).toBeTruthy();
+    });
+  });
+  describe('addGuess', () => {
+    it('Throws error if the game is already won', () => {
+      blankTestArea.solution = 'RIGHT';
+      blankTestArea.addGuess('RIGHT');
+      expect(() => blankTestArea.addGuess('ERROR')).toThrowError();
+    });
+    it('Throws error if the game is already lost', () => {
+      blankTestArea.solution = 'RIGHT';
+      for (let i = 0; i < 6; i++) {
+        blankTestArea.addGuess('WRONG');
+      }
+      expect(() => blankTestArea.addGuess('ERROR')).toThrowError();
+    });
+    it('Throws error if the guess is not the same length as the solution', () => {
+      expect(() => blankTestArea.addGuess('BAD')).toThrowError();
+    });
+    it('Throws error if the guess is not in the dictionary', () => {
+      expect(() => blankTestArea.addGuess('IDDQD')).toThrowError();
+    });
+    it('Adds a valid guess to the history and adjusts the current score', () => {
+      const guessHistoryCopy = [...guessHistory];
+      expect(testArea.guessHistory).toEqual(guessHistoryCopy);
+      expect(testArea.currentScore).toEqual(8);
+      testArea.addGuess('OTHER');
+      expect(testArea.guessHistory).toEqual(guessHistoryCopy.concat('OTHER'));
+      expect(testArea.currentScore).toEqual(5);
     });
   });
   describe('remove', () => {

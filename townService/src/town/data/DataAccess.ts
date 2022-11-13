@@ -1,62 +1,41 @@
-import * as fs from 'fs';
-import * as rl from 'readline';
+import ENG_FIVE_ALL from './ENG-5-ALL';
+import ENG_FIVE_POOL from './ENG-5-POOL';
 
 class DataAccess {
-  private static _initialized = false;
+  private static _instance: DataAccess;
 
-  private static _eng5PoolFile = 'ENG-5-POOL.txt';
+  private _eng5PoolFile = 'ENG-5-POOL.txt';
 
-  private static _eng5Pool: string[];
+  private _eng5Pool: string[];
 
-  private static _eng5AllFile = 'ENG-5-ALL.txt';
+  private _eng5AllFile = 'ENG-5-ALL.txt';
 
-  private static _eng5All: string[];
+  private _eng5All: string[];
 
-  private static async _initialize() {
-    async function _initializeWordlist(fileName: string): Promise<string[]> {
-      const newList: string[] = [];
-      const file = fs.createReadStream(`data/${fileName}`);
-      const reader = rl.createInterface({
-        input: file,
-      });
-
-      for await (const line of reader) {
-        newList.push(line);
-      }
-
-      return newList;
-    }
-
-    async function _setWordlists(): Promise<void> {
-      DataAccess._eng5Pool = await _initializeWordlist(DataAccess._eng5PoolFile);
-      DataAccess._eng5All = await _initializeWordlist(DataAccess._eng5AllFile);
-    }
-
-    await _setWordlists();
-    this._initialized = true;
+  private constructor() {
+    this._eng5Pool = JSON.parse(ENG_FIVE_POOL);
+    this._eng5All = JSON.parse(ENG_FIVE_ALL);
   }
 
-  public static async isValidWord(word: string, restricted = false) {
-    if (!this._initialized) {
-      await this._initialize();
+  public static getAccess(): DataAccess {
+    if (!DataAccess._instance) {
+      DataAccess._instance = new DataAccess();
     }
 
+    return DataAccess._instance;
+  }
+
+  public isValidWord(word: string, restricted = false) {
     word = word.toLowerCase();
     switch (word.length) {
       case 5:
-        return restricted
-          ? DataAccess._eng5Pool.includes(word)
-          : DataAccess._eng5All.includes(word);
+        return restricted ? this._eng5Pool.includes(word) : this._eng5All.includes(word);
       default:
         throw new Error(`Coverage for words of length ${word.length} is unsupported`);
     }
   }
 
-  public static async getValidWord(length: number, restricted = false) {
-    if (!this._initialized) {
-      await this._initialize();
-    }
-
+  public getValidWord(length: number, restricted = false) {
     const wordExtractor = (wordlist: string[]) => {
       const randomIdx = Math.floor(Math.random() * wordlist.length);
       return wordlist[randomIdx];
@@ -64,9 +43,7 @@ class DataAccess {
 
     switch (length) {
       case 5:
-        return restricted
-          ? wordExtractor(DataAccess._eng5Pool)
-          : wordExtractor(DataAccess._eng5All);
+        return restricted ? wordExtractor(this._eng5Pool) : wordExtractor(this._eng5All);
       default:
         throw new Error(`Coverage for words of length ${length} is unsupported`);
     }
