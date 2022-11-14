@@ -1,6 +1,5 @@
-import { HStack, VStack } from '@chakra-ui/react';
+import { Center, HStack, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
-import { EmptyTile, Tile } from './WordleTile';
 
 interface GuessLetter {
   letter: string;
@@ -15,8 +14,42 @@ interface RowProps {
   guess?: GuessLetter[] | undefined;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const Row = ({ guess }: RowProps) => {
+interface TileProps {
+  letter: string;
+  color: string;
+  order?: number;
+}
+
+function Tile({ letter, color }: TileProps): JSX.Element {
+  return (
+    <Center
+      w={['50px', '55px', '60px']}
+      h={['50px', '55px', '60px']}
+      border='1px'
+      backgroundColor={color}
+      borderColor='gray.700'
+      userSelect='none'>
+      <Text fontWeight={700} fontSize='x-large'>
+        {letter.toUpperCase()}
+      </Text>
+    </Center>
+  );
+}
+
+function EmptyTile({ showCursor }: { showCursor?: boolean }): JSX.Element {
+  return (
+    <Center
+      w={['50px', '55px', '60px']}
+      h={['50px', '55px', '60px']}
+      border='1px'
+      borderColor={'gray.700'}
+      userSelect='none'>
+      {showCursor && <Text fontSize='x-large'>_</Text>}
+    </Center>
+  );
+}
+
+function Row({ guess }: RowProps): JSX.Element {
   // if there's no guess, return a row of empty tiles
   if (guess === undefined) {
     return (
@@ -38,10 +71,9 @@ const Row = ({ guess }: RowProps) => {
       ))}
     </HStack>
   );
-};
+}
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const Board = ({ guesses }: BoardProps) => {
+export default function Board({ guesses }: BoardProps): JSX.Element {
   //TODO: add solution property to WordleArea so this isn't hard coded
   const solutionArray = [...'guess'];
 
@@ -88,6 +120,4 @@ const Board = ({ guesses }: BoardProps) => {
       })}
     </VStack>
   );
-};
-
-export default Board;
+}

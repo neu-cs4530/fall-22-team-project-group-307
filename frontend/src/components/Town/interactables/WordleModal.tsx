@@ -16,12 +16,7 @@ import { WordleArea as WordleAreaModel } from '../../../types/CoveyTownSocket';
 import WordleAreaInteractable from './WordleArea';
 import WordleGame from './WordleGame';
 
-interface Guess {
-  key: string;
-  color: string;
-}
-
-export function WordleAreaModal({
+export function CreateWordleModal({
   isOpen,
   wordleArea,
 }: {
@@ -61,8 +56,6 @@ export function WordleAreaModal({
           title: 'Wordle Created!',
           status: 'success',
         });
-        coveyTownController.unPause();
-        closeModal();
       } catch (err) {
         if (err instanceof Error) {
           toast({
@@ -79,7 +72,7 @@ export function WordleAreaModal({
         }
       }
     }
-  }, [coveyTownController, wordleArea, closeModal, toast]);
+  }, [wordleArea, coveyTownController, toast]);
 
   return (
     <Modal
@@ -137,7 +130,7 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
 
   // if the isPlaying property of the WordleArea in question is false, return the select modal
   if (!isPlaying) {
-    return <WordleAreaModal isOpen={!isPlaying} wordleArea={wordleArea} />;
+    return <CreateWordleModal isOpen={!isPlaying} wordleArea={wordleArea} />;
   }
 
   //if true, then return the component representing the actual Wordle game
