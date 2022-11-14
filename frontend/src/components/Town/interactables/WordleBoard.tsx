@@ -75,34 +75,56 @@ function Row({ guess }: RowProps): JSX.Element {
 
 export default function Board({ guesses }: BoardProps): JSX.Element {
   //TODO: add solution property to WordleArea so this isn't hard coded
-  const solutionArray = [...'guess'];
+  const solutionArray = [...'GUESS']; // whenever this gets changed can we make the sol uppercase (will change backend to reflect this) -victor
 
   const convertGuess = (toConvert: string | undefined) => {
+    const converted: GuessLetter[] = new Array(5);
+
     // if a row hasn't been guessed yet, return a blank row
     if (toConvert === undefined) {
-      const result: GuessLetter[] = [];
       solutionArray.forEach(() => {
-        result.push({
+        converted.push({
           letter: '',
           color: 'gray',
         });
       });
-      return result;
+      return converted;
     }
-    const converted: GuessLetter[] = [...toConvert].map((character, i) => {
-      // color check
-      let color = 'gray'; // default color
-      if (character.toLowerCase() == solutionArray[i]) {
-        color = 'green'; // letter in correct spot
-      } else if (solutionArray.includes(character.toLowerCase())) {
-        color = 'yellow'; // letter is part of the word, but not in the correct spot
-      }
 
-      return {
-        letter: character.toLowerCase(),
-        color: color,
-      };
-    });
+    const answer = solutionArray.map(letter => letter);
+    const guess = [...toConvert.toUpperCase()];
+
+    for (let i = 0; i < 5; i++) {
+      if (guess[i] === answer[i]) {
+        converted[i] = {
+          letter: guess[i],
+          color: 'green',
+        };
+        guess[i] = ' ';
+        answer[i] = ' ';
+      }
+    }
+
+    for (let i = 0; i < 5; i++) {
+      const yellowMatch = answer.indexOf(guess[i]);
+      if (guess[i] !== ' ' && yellowMatch !== -1) {
+        converted[i] = {
+          letter: guess[i],
+          color: 'yellow',
+        };
+        guess[i] = ' ';
+        answer[yellowMatch] = ' ';
+      }
+    }
+
+    for (let i = 0; i < 5; i++) {
+      if (guess[i] !== ' ') {
+        converted[i] = {
+          letter: guess[i],
+          color: 'gray',
+        };
+      }
+    }
 
     return converted;
   };
