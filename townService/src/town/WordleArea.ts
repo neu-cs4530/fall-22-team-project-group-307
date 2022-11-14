@@ -2,8 +2,15 @@ import { ITiledMapObject } from '@jonbell/tiled-map-type-guard';
 import Player from '../lib/Player';
 import { BoundingBox, TownEmitter, WordleArea as WordleAreaModel } from '../types/CoveyTownSocket';
 import InteractableArea from './InteractableArea';
+import DataAccess from './data/DataAccess';
 
 export default class WordleArea extends InteractableArea {
+  private _wordLength = 5;
+
+  private _maxGuesses = 6;
+
+  private _guessScores = [13, 8, 5, 3, 2, 1];
+
   private _solution: string;
 
   private _isPlaying: boolean;
@@ -21,7 +28,7 @@ export default class WordleArea extends InteractableArea {
   }
 
   public set solution(value: string) {
-    this._solution = value;
+    this._solution = value.toUpperCase();
   }
 
   public get isPlaying(): boolean {
@@ -82,8 +89,41 @@ export default class WordleArea extends InteractableArea {
     this._guessHistory = guessHistory;
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
-    // TODO: take out hardcoding
-    this._solution = 'guess';
+    this._solution = DataAccess.getAccess().getValidWord(5);
+  }
+
+  /**
+   * Checks if the game is currently in a state which references a player win.
+   * @returns if the player has won
+   */
+  public isGameWon(): boolean {
+    return this.guessHistory[this.guessHistory.length - 1] === this.solution;
+  }
+
+  /**
+   * Checks if the game is currently in a state which references a player loss.
+   * @returns if the player has lost
+   */
+  public isGameLost(): boolean {
+    return !this.isGameWon() && this.guessHistory.length >= this._maxGuesses;
+  }
+
+  /**
+   * Adds a guess to this game.
+   * @param guess the full entered guess from the user
+   * @throws if the game is over, the guess is not a valid length, or the guess is not a valid word
+   */
+  public addGuess(guess: string) {
+    if (this.isGameWon() || this.isGameLost()) {
+      throw new Error('Guess cannot be made on a finished game');
+    } else if (guess.length !== this._wordLength) {
+      throw new Error(`Given guess is not of length ${this._wordLength} (length: ${guess.length})`);
+    } else if (!DataAccess.getAccess().isValidWord(guess)) {
+      throw new Error(`Given word '${guess}' is not a word in the dictionary`);
+    }
+
+    this.guessHistory.push(guess.toUpperCase());
+    this._currentScore = this._guessScores[this.guessHistory.length - 1];
   }
 
   /**
