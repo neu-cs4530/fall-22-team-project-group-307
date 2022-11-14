@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import DataAccess from './DataAccess';
 import ENG_FIVE_ALL from './ENG-5-ALL';
 import ENG_FIVE_POOL from './ENG-5-POOL';
@@ -44,10 +43,10 @@ describe('DataAccess', () => {
 
   describe('getValidWord', () => {
     it('Returns a valid word of specified length', () => {
-      const retrievedWordPool = access.getValidWord(5, true);
-      expect(poolList.includes(retrievedWordPool)).toBeTruthy();
-      const retrievedWordAll = access.getValidWord(5);
-      expect(allList.includes(retrievedWordAll)).toBeTruthy();
+      const retrievedPoolWord = access.getValidWord(5, true);
+      expect(retrievedPoolWord.length).toEqual(5);
+      const retrievedAllWord = access.getValidWord(5);
+      expect(retrievedAllWord.length).toEqual(5);
     });
     it('Throws error for invalid word length', () => {
       expect(() => access.getValidWord(4, true)).toThrowError();
