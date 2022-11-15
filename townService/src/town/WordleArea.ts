@@ -23,6 +23,10 @@ export default class WordleArea extends InteractableArea {
 
   private _spectatorPlayers: Player[];
 
+  private _isWon: boolean;
+
+  private _isLost: boolean;
+
   public get solution(): string {
     return this._solution;
   }
@@ -71,6 +75,14 @@ export default class WordleArea extends InteractableArea {
     this._spectatorPlayers = spectators;
   }
 
+  public get isWon(): boolean {
+    return this._isWon;
+  }
+
+  public get isLost(): boolean {
+    return this._isLost;
+  }
+
   /**
    * Creates a new WordleArea
    *
@@ -90,6 +102,8 @@ export default class WordleArea extends InteractableArea {
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
     this._solution = DataAccess.getAccess().getValidWord(5);
+    this._isWon = this.isGameWon();
+    this._isLost = this.isGameLost();
   }
 
   /**
@@ -151,6 +165,8 @@ export default class WordleArea extends InteractableArea {
     this._isPlaying = isPlaying;
     this._currentScore = currentScore;
     this._guessHistory = guessHistory;
+    this._isWon = this.isGameWon();
+    this._isLost = this.isGameLost();
   }
 
   /**
@@ -163,6 +179,8 @@ export default class WordleArea extends InteractableArea {
       isPlaying: this._isPlaying,
       currentScore: this._currentScore,
       guessHistory: this._guessHistory,
+      isWon: this.isGameWon(),
+      isLost: this.isGameLost(),
     };
   }
 
@@ -179,7 +197,14 @@ export default class WordleArea extends InteractableArea {
     }
     const rect: BoundingBox = { x: mapObject.x, y: mapObject.y, width, height };
     return new WordleArea(
-      { isPlaying: false, id: name, currentScore: 0, guessHistory: [] },
+      {
+        isPlaying: false,
+        id: name,
+        currentScore: 0,
+        guessHistory: [],
+        isWon: false,
+        isLost: false,
+      },
       rect,
       townEmitter,
     );
