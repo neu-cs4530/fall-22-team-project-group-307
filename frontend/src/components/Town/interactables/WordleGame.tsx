@@ -1,6 +1,8 @@
 import {
   Flex,
   FormControl,
+  FormErrorMessage,
+  FormHelperText,
   Input,
   Modal,
   ModalBody,
@@ -28,6 +30,14 @@ export default function WordleGame({
 
   const [guessHistory, setGuessHistory] = useState(wordleAreaController.guessHistory);
 
+  const [input, setInput] = useState('');
+  const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) =>
+    setInput(e.target.value);
+
+  const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
+  const isSymbolError = specialCharacters.test(input);
+  const isLengthError = input.length != 5;
+
   useEffect(() => {
     const setHistory = (newHistory: string[]) => {
       if (newHistory !== guessHistory) {
@@ -53,10 +63,11 @@ export default function WordleGame({
   const handleSubmit = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     const guess: string = ev.currentTarget.value;
     if (ev.key === 'Enter') {
-      if (guess.length == 5) {
+      if (!isLengthError && !isSymbolError) {
         const inWordList = true; // TODO: Actually check to see if guess is in word list
         if (inWordList) {
           setGuessHistory([...guessHistory, guess]);
+          setInput('');
           ev.currentTarget.value = '';
         } else {
           toast({
@@ -67,7 +78,7 @@ export default function WordleGame({
         }
       } else {
         toast({
-          title: 'Guess not long enough!',
+          title: 'Invalid guess - try again',
           status: 'error',
           duration: 1000,
         });
@@ -91,12 +102,23 @@ export default function WordleGame({
             justifyContent='space-evenly'>
             <Board guesses={guessHistory} />
           </Flex>
-          <FormControl>
+          <FormControl isInvalid={isSymbolError}>
             <Input
               maxLength={5}
-              placeholder='Input your five-letter guess here!'
+              value={input}
+              onChange={handleInputChange}
               onKeyDown={handleSubmit}
+              errorBorderColor='red.300'
             />
+            {!isSymbolError ? (
+              isLengthError ? (
+                <FormHelperText>A Wordle is five characters long.</FormHelperText>
+              ) : (
+                <FormHelperText>Happy guessing!</FormHelperText>
+              )
+            ) : (
+              <FormErrorMessage>A guess cannot contain symbols.</FormErrorMessage>
+            )}
           </FormControl>
         </ModalBody>
       </ModalContent>
