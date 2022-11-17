@@ -2,6 +2,8 @@ import {
   Box,
   Flex,
   FormControl,
+  FormErrorMessage,
+  FormHelperText,
   Input,
   Modal,
   ModalBody,
@@ -30,6 +32,14 @@ export default function WordleGame({
 
   const [guessHistory, setGuessHistory] = useState(wordleAreaController.guessHistory);
 
+  const [input, setInput] = useState('');
+  const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) =>
+    setInput(e.target.value);
+
+  const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
+  const isSymbolError = specialCharacters.test(input);
+  const isLengthError = input.length != 5;
+
   useEffect(() => {
     const setHistory = (newHistory: string[]) => {
       if (newHistory !== guessHistory) {
@@ -55,10 +65,11 @@ export default function WordleGame({
   const handleSubmit = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     const guess: string = ev.currentTarget.value;
     if (ev.key === 'Enter') {
-      if (guess.length == 5) {
+      if (!isLengthError && !isSymbolError) {
         const inWordList = true; // TODO: Actually check to see if guess is in word list
         if (inWordList) {
           setGuessHistory([...guessHistory, guess]);
+          setInput('');
           ev.currentTarget.value = '';
         } else {
           toast({
@@ -69,7 +80,7 @@ export default function WordleGame({
         }
       } else {
         toast({
-          title: 'Guess not long enough!',
+          title: 'Invalid guess - try again',
           status: 'error',
           duration: 1000,
         });
