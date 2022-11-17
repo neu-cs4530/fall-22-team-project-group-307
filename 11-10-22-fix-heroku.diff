@@ -1,0 +1,151 @@
+From 7253c97d06b6dd58f87dbed2002e8ca518edf7e6 Mon Sep 17 00:00:00 2001
+From: Jonathan Bell <jon@jonbell.net>
+Date: Thu, 10 Nov 2022 13:51:23 -0500
+Subject: [PATCH] Fix heroku builds
+
+---
+ package.json | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/package.json b/package.json
+index 5d047bb..f7a620a 100644
+--- a/package.json
++++ b/package.json
+@@ -4,8 +4,8 @@
+     "description": "Development setup",
+     "main": "index.js",
+     "scripts": {
+-        "install": "cd townService && npm install && npm run prestart && cd ../frontend && npm install && npm run prestart && cd ../shared && npm install",
+-        "heroku-postbuild": "cd townService && npm install && npm run build",
++        "install": "cd townService && CI= NODE_ENV=development npm install && CI= NODE_ENV=development npm run prestart && cd ../frontend && CI= NODE_ENV=development npm install && CI= NODE_ENV=development npm run prestart && cd ../shared && CI= NODE_ENV=development npm install",
++        "heroku-postbuild": "cd townService && CI= NODE_ENV=development npm install && npm run build",
+         "run-townservice": "heroku local -p 3001 web",
+         "lint": "cd townService && npm run-script lint && cd ../frontend && npm run-script lint && cd ../shared && npm run-script lint",
+ 		"zip": "npm-pack-zip"
+-- 
+2.27.0
+
+From fe58cb6bb7e63c2e6725ad412ef932cb5ce5d6cb Mon Sep 17 00:00:00 2001
+From: Jonathan Bell <jon@jonbell.net>
+Date: Thu, 10 Nov 2022 13:58:02 -0500
+Subject: [PATCH] Fix heroku builds
+
+---
+ package.json | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/package.json b/package.json
+index f7a620a..b4e97e9 100644
+--- a/package.json
++++ b/package.json
+@@ -44,8 +44,7 @@
+         "*.{js,css,md}": "prettier --write"
+     },
+     "engines": {
+-        "node": "18.x.x",
+-        "npm": "8.x.x"
++        "node": "16.x.x"
+     },
+     "dependencies": {
+         "@types/ramda": "^0.27.34",
+-- 
+2.27.0
+
+From 5bf49f353db9f87377815afbaf6795e5fb369979 Mon Sep 17 00:00:00 2001
+From: Jonathan Bell <jon@jonbell.net>
+Date: Thu, 10 Nov 2022 14:22:16 -0500
+Subject: [PATCH] :facepalm:
+
+---
+ Procfile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Procfile b/Procfile
+index 061eabb..5092a88 100644
+--- a/Procfile
++++ b/Procfile
+@@ -1 +1 @@
+-web: node services/townService/build/server.js
++web: node townService/build/server.js
+-- 
+2.27.0
+
+From 441523e1b424170e49e2f790ad136a7a0758432d Mon Sep 17 00:00:00 2001
+From: Jonathan Bell <jon@jonbell.net>
+Date: Thu, 10 Nov 2022 14:30:22 -0500
+Subject: [PATCH] :facepalm:
+
+---
+ Procfile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Procfile b/Procfile
+index 5092a88..16c326a 100644
+--- a/Procfile
++++ b/Procfile
+@@ -1 +1 @@
+-web: node townService/build/server.js
++web: node townService/build/Server.js
+-- 
+2.27.0
+
+From 338c0e0cb67cd4a1a7e03fd1e6b7be55394743a7 Mon Sep 17 00:00:00 2001
+From: Jonathan Bell <jon@jonbell.net>
+Date: Thu, 10 Nov 2022 17:02:56 -0500
+Subject: [PATCH] modules are the worst
+
+---
+ Procfile                  | 2 +-
+ townService/tsconfig.json | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Procfile b/Procfile
+index 16c326a..0f6b0ee 100644
+--- a/Procfile
++++ b/Procfile
+@@ -1 +1 @@
+-web: node townService/build/Server.js
++web: node --es-module-specifier-resolution=node townService/build/Server.js
+diff --git a/townService/tsconfig.json b/townService/tsconfig.json
+index 28e3e95..557631b 100644
+--- a/townService/tsconfig.json
++++ b/townService/tsconfig.json
+@@ -1,5 +1,5 @@
+ {
+- "include": ["src/**/*"],
++ "include": ["src/**/*", "generated/**/*"],
+     "exclude": ["node_modules", "jest.config.ts"],
+     "compilerOptions": {
+         /* Visit https://aka.ms/tsconfig.json to read more about this file */
+@@ -49,8 +49,8 @@
+ 
+         /* Module Resolution Options */
+         // "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+-        // "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
+         // "paths": {},                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
++         "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
+         // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
+         // "typeRoots": [],                       /* List of folders to include type definitions from. */
+         // "types": [],                           /* Type declaration files to be included in compilation. */
+-- 
+2.27.0
+
+From 19ff7a31262bab89d705f7c853de0d1f2bf21204 Mon Sep 17 00:00:00 2001
+From: Jonathan Bell <jon@jonbell.net>
+Date: Thu, 10 Nov 2022 18:36:18 -0500
+Subject: [PATCH] more heroku config
+
+---
+ Procfile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Procfile b/Procfile
+index 0f6b0ee..e1dba2f 100644
+--- a/Procfile
++++ b/Procfile
+@@ -1 +1 @@
+-web: node --es-module-specifier-resolution=node townService/build/Server.js
++web: node --es-module-specifier-resolution=node townService/build/src/Server.js
+-- 
+2.27.0
+
