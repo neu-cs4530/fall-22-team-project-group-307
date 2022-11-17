@@ -13,7 +13,6 @@ import {
   ModalOverlay,
   useToast,
 } from '@chakra-ui/react';
-import _ from 'lodash';
 import { default as React, useEffect, useState } from 'react';
 import { useWordleAreaController } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
