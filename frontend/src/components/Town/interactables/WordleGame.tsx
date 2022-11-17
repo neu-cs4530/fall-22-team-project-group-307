@@ -1,4 +1,5 @@
 import {
+  Box,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -12,6 +13,7 @@ import {
   ModalOverlay,
   useToast,
 } from '@chakra-ui/react';
+import _ from 'lodash';
 import { default as React, useEffect, useState } from 'react';
 import { useWordleAreaController } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
@@ -86,42 +88,69 @@ export default function WordleGame({
     }
   };
 
-  return (
-    <Modal isOpen={true} onClose={closeGame}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalCloseButton />
-        <ModalHeader>{wordleArea?.name} </ModalHeader>
-        <ModalBody mb={5}>
-          <Flex
-            mb={4}
-            flexDir='column'
-            height='100%'
-            overflow={'hidden'}
-            alignItems='center'
-            justifyContent='space-evenly'>
-            <Board guesses={guessHistory} />
-          </Flex>
-          <FormControl isInvalid={isSymbolError}>
-            <Input
-              maxLength={5}
-              value={input}
-              onChange={handleInputChange}
-              onKeyDown={handleSubmit}
-              errorBorderColor='red.300'
-            />
-            {!isSymbolError ? (
-              isLengthError ? (
-                <FormHelperText>A Wordle is five characters long.</FormHelperText>
+  if (_.includes(guessHistory, 'guess') || guessHistory.length >= 6) {
+    const boxColor = _.includes(guessHistory, 'guess') ? 'green' : 'tomato';
+    const boxText = _.includes(guessHistory, 'guess') ? 'You won!' : 'You Lost.';
+    return (
+      <Modal isOpen={true} onClose={closeGame}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalHeader>{wordleArea?.name} </ModalHeader>
+          <ModalBody mb={5}>
+            <Flex
+              mb={4}
+              flexDir='column'
+              height='100%'
+              overflow={'hidden'}
+              alignItems='center'
+              justifyContent='space-evenly'>
+              <Box bg={boxColor} w='100%' p={4} color='white'>
+                {boxText}
+              </Box>
+            </Flex>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
+  } else {
+    return (
+      <Modal isOpen={true} onClose={closeGame}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalHeader>{wordleArea?.name} </ModalHeader>
+          <ModalBody mb={5}>
+            <Flex
+              mb={4}
+              flexDir='column'
+              height='100%'
+              overflow={'hidden'}
+              alignItems='center'
+              justifyContent='space-evenly'>
+              <Board guesses={guessHistory} />
+            </Flex>
+            <FormControl isInvalid={isSymbolError}>
+              <Input
+                maxLength={5}
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleSubmit}
+                errorBorderColor='red.300'
+              />
+              {!isSymbolError ? (
+                isLengthError ? (
+                  <FormHelperText>A Wordle is five characters long.</FormHelperText>
+                ) : (
+                  <FormHelperText>Happy guessing!</FormHelperText>
+                )
               ) : (
-                <FormHelperText>Happy guessing!</FormHelperText>
-              )
-            ) : (
-              <FormErrorMessage>A guess cannot contain symbols.</FormErrorMessage>
-            )}
-          </FormControl>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-  );
+                <FormErrorMessage>A guess cannot contain symbols.</FormErrorMessage>
+              )}
+            </FormControl>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
+  }
 }
