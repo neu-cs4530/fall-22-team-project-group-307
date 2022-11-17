@@ -19,6 +19,7 @@ import { useWordleAreaController } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
+import _ from 'lodash';
 
 export default function WordleGame({
   wordleArea,

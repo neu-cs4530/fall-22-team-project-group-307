@@ -3,7 +3,6 @@ import _ from 'lodash';
 import TypedEmitter from 'typed-emitter';
 import { WordleArea as WordleAreaModel } from '../types/CoveyTownSocket';
 import PlayerController from './PlayerController';
-
 /**
  * The events that the WordleAreaController emits to subscribers. These events
  * are only ever emitted to local components (not to the townService).
@@ -97,6 +96,13 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
   }
 
   /**
+   * Gets the list of current occupants.
+   */
+  get occupants() {
+    return this._occupants;
+  }
+
+  /**
    * The list of occupants in this wordle area. Changing the set of occupants
    * will emit an occupantsChange event.
    */
@@ -110,8 +116,20 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
     }
   }
 
-  get occupants() {
-    return this._occupants;
+  public get isGameWon() {
+    return this._model.isWon;
+  }
+
+  public set isGameWon(value: boolean) {
+    this.isGameWon = value;
+  }
+
+  public get isGameLost() {
+    return this._model.isLost;
+  }
+
+  public set isGameLost(value: boolean) {
+    this.isGameLost = value;
   }
 
   /**
@@ -138,5 +156,7 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
   public updateFrom(updatedModel: WordleAreaModel): void {
     this.isPlaying = updatedModel.isPlaying;
     this.score = updatedModel.currentScore;
+    this.isGameWon = updatedModel.isWon;
+    this.isGameLost = updatedModel.isLost;
   }
 }
