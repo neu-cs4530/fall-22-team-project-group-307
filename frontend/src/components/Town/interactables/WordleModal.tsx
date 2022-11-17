@@ -49,6 +49,8 @@ export function CreateWordleModal({
         isPlaying: true,
         currentScore: 0,
         guessHistory: [],
+        isWon: false,
+        isLost: false,
       };
       try {
         await coveyTownController.createWordleArea(wordleToCreate);
