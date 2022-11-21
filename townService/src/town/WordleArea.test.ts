@@ -19,7 +19,7 @@ describe('WordleArea', () => {
   beforeEach(() => {
     mockClear(townEmitter);
     testArea = new WordleArea(
-      { id, isPlaying, currentScore, guessHistory, isWon: false, isLost: false },
+      { id, isPlaying, currentScore, guessHistory, isWon: false, isLost: false, occupantsByID: [] },
       testAreaBox,
       townEmitter,
     );
@@ -31,6 +31,7 @@ describe('WordleArea', () => {
         guessHistory: [],
         isWon: false,
         isLost: false,
+        occupantsByID: [],
       },
       testAreaBox,
       townEmitter,
@@ -172,6 +173,7 @@ describe('WordleArea', () => {
         guessHistory,
         isWon: false,
         isLost: false,
+        occupantsByID: testArea.occupantsByID,
       });
     });
     it("Clears the player's conversationLabel and emits an update for their location", () => {
@@ -190,6 +192,7 @@ describe('WordleArea', () => {
         guessHistory,
         isWon: false,
         isLost: false,
+        occupantsByID: [],
       });
       expect(testArea.isPlaying).toEqual(false);
     });
@@ -202,6 +205,7 @@ describe('WordleArea', () => {
       guessHistory: ['FIRST'],
       isWon: false,
       isLost: false,
+      occupantsByID: [],
     });
     expect(testArea.isPlaying).toBe(false);
     expect(testArea.currentScore).toBe(2);
@@ -216,6 +220,7 @@ describe('WordleArea', () => {
       guessHistory,
       isWon: false,
       isLost: false,
+      occupantsByID: model.occupantsByID,
     });
   });
 });

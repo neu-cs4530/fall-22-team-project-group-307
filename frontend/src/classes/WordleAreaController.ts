@@ -121,7 +121,7 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
   }
 
   public set isGameWon(value: boolean) {
-    this.isGameWon = value;
+    this._model.isWon = value;
   }
 
   public get isGameLost() {
@@ -129,7 +129,7 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
   }
 
   public set isGameLost(value: boolean) {
-    this.isGameLost = value;
+    this._model.isLost = value;
   }
 
   /**
@@ -144,7 +144,15 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
    * townService's representation and is suitable for transmitting over the network.
    */
   toWordleAreaModel(): WordleAreaModel {
-    return this._model;
+    return {
+      id: this.id,
+      isPlaying: this.isPlaying,
+      currentScore: this.score,
+      guessHistory: this.guessHistory,
+      isWon: this.isGameWon,
+      isLost: this.isGameLost,
+      occupantsByID: this.occupants.map(player => player.id),
+    };
   }
 
   /**
@@ -156,6 +164,7 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
   public updateFrom(updatedModel: WordleAreaModel): void {
     this.isPlaying = updatedModel.isPlaying;
     this.score = updatedModel.currentScore;
+    this.guessHistory = updatedModel.guessHistory;
     this.isGameWon = updatedModel.isWon;
     this.isGameLost = updatedModel.isLost;
   }

@@ -76,6 +76,7 @@ export interface WordleArea {
   guessHistory: string[];
   isWon: boolean;
   isLost: boolean;
+  occupantsByID: string[];
 }
 
 export interface ServerToClientEvents {

@@ -551,6 +551,7 @@ describe('Town', () => {
             guessHistory: [],
             isWon: false,
             isLost: false,
+            occupantsByID: [],
           }),
         ).toBeTruthy();
         const wordleArea = town.getInteractable('WordleEx1');
@@ -697,6 +698,7 @@ describe('Town', () => {
           guessHistory: [],
           isWon: false,
           isLost: false,
+          occupantsByID: [],
         }),
       ).toEqual(false));
     describe('When successful', () => {
@@ -710,6 +712,7 @@ describe('Town', () => {
             guessHistory: [],
             isWon: false,
             isLost: false,
+            occupantsByID: [],
           }),
         ).toEqual(true);
       });
@@ -730,6 +733,7 @@ describe('Town', () => {
           guessHistory: [],
           isWon: false,
           isLost: false,
+          occupantsByID: [playerTestData.player?.id],
         });
       });
     });

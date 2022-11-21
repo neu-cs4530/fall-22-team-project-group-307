@@ -181,6 +181,7 @@ export default class WordleArea extends InteractableArea {
       guessHistory: this._guessHistory,
       isWon: this.isGameWon(),
       isLost: this.isGameLost(),
+      occupantsByID: this._occupants.map(player => player.id),
     };
   }
 
@@ -204,6 +205,7 @@ export default class WordleArea extends InteractableArea {
         guessHistory: [],
         isWon: false,
         isLost: false,
+        occupantsByID: [],
       },
       rect,
       townEmitter,
