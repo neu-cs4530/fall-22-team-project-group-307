@@ -2,7 +2,6 @@ import {
   Box,
   Flex,
   FormControl,
-  FormErrorMessage,
   FormHelperText,
   Input,
   Modal,
@@ -13,12 +12,12 @@ import {
   ModalOverlay,
   useToast,
 } from '@chakra-ui/react';
+import _ from 'lodash';
 import { default as React, useEffect, useState } from 'react';
 import { useWordleAreaController } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
-import _ from 'lodash';
 
 export default function WordleGame({
   wordleArea,
@@ -37,7 +36,9 @@ export default function WordleGame({
     setInput(e.target.value);
 
   const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
+  const numberCharacters = /[0-9]/;
   const isSymbolError = specialCharacters.test(input);
+  const isNumberError = numberCharacters.test(input);
   const isLengthError = input.length != 5;
 
   useEffect(() => {
@@ -65,7 +66,22 @@ export default function WordleGame({
   const handleSubmit = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     const guess: string = ev.currentTarget.value;
     if (ev.key === 'Enter') {
-      if (!isLengthError && !isSymbolError) {
+      if (isSymbolError || isNumberError) {
+        toast({
+          title: 'Guess cannot contain symbols or numbers',
+          status: 'error',
+          duration: 1000,
+        });
+      }
+      if (isLengthError) {
+        toast({
+          title: 'Too short - a guess must be 5 characters',
+          status: 'error',
+          duration: 1000,
+        });
+      }
+
+      if (!isLengthError && !isSymbolError && !isNumberError) {
         const inWordList = true; // TODO: Actually check to see if guess is in word list
         if (inWordList) {
           setGuessHistory([...guessHistory, guess]);
@@ -78,12 +94,6 @@ export default function WordleGame({
             duration: 1000,
           });
         }
-      } else {
-        toast({
-          title: 'Invalid guess - try again',
-          status: 'error',
-          duration: 1000,
-        });
       }
     }
   };
@@ -138,14 +148,10 @@ export default function WordleGame({
                 onKeyDown={handleSubmit}
                 errorBorderColor='red.300'
               />
-              {!isSymbolError ? (
-                isLengthError ? (
-                  <FormHelperText>A Wordle is five characters long.</FormHelperText>
-                ) : (
-                  <FormHelperText>Happy guessing!</FormHelperText>
-                )
+              {isLengthError ? (
+                <FormHelperText>A Wordle is five characters long.</FormHelperText>
               ) : (
-                <FormErrorMessage>A guess cannot contain symbols.</FormErrorMessage>
+                <FormHelperText>Happy guessing!</FormHelperText>
               )}
             </FormControl>
           </ModalBody>

@@ -4,7 +4,7 @@ import { ConversationArea, Interactable, WordleArea, ViewingArea } from './Covey
  * Test to see if an interactable is a conversation area
  */
 export function isConversationArea(interactable: Interactable): interactable is ConversationArea {
-  return 'occupantsByID' in interactable;
+  return 'topic' in interactable;
 }
 
 /**
