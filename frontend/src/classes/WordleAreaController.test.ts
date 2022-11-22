@@ -20,7 +20,7 @@ describe('WordleAreaController', () => {
       guessHistory: [],
       isWon: false,
       isLost: false,
-      occupantsByID: [],
+      occupantIDs: [],
     };
     const playerLocation: PlayerLocation = {
       moving: false,
@@ -34,7 +34,7 @@ describe('WordleAreaController', () => {
       new PlayerController(nanoid(), nanoid(), playerLocation),
       new PlayerController(nanoid(), nanoid(), playerLocation),
     ];
-    testAreaModel.occupantsByID = testArea.occupants.map(player => player.id);
+    testAreaModel.occupantIDs = testArea.occupants.map(player => player.id);
     mockClear(townController);
     mockClear(mockListeners.scoreChange);
     mockClear(mockListeners.occupantsChange);
@@ -90,7 +90,7 @@ describe('WordleAreaController', () => {
         guessHistory: testArea.guessHistory,
         isWon: testArea.isGameWon,
         isLost: testArea.isGameLost,
-        occupantsByID: testArea.occupants.map(eachOccupant => eachOccupant.id),
+        occupantIDs: testArea.occupants.map(eachOccupant => eachOccupant.id),
       });
     });
   });
@@ -122,7 +122,7 @@ describe('WordleAreaController', () => {
         guessHistory: ['guess'],
         isWon: true,
         isLost: false,
-        occupantsByID: [],
+        occupantIDs: [],
       };
       testArea.updateFrom(newModel);
       expect(testArea.isPlaying).toEqual(newModel.isPlaying);
@@ -140,7 +140,7 @@ describe('WordleAreaController', () => {
         guessHistory: ['guess'],
         isWon: true,
         isLost: false,
-        occupantsByID: [],
+        occupantIDs: [],
       };
       testArea.updateFrom(newModel);
       expect(testArea.id).toEqual(existingID);

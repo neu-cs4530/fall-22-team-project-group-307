@@ -201,9 +201,9 @@ export function isViewingArea(interactable: Interactable): interactable is Viewi
 }
 
 export function isConversationArea(interactable: Interactable): interactable is ConversationArea {
-  return 'topic' in interactable;
+  return 'occupantsByID' in interactable;
 }
 
 export function isWordleArea(interactable: Interactable): interactable is WordleArea {
-  return 'currentScore' in interactable;
+  return 'guessHistory' in interactable;
 }

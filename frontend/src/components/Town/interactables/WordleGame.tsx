@@ -15,20 +15,21 @@ import {
 import _ from 'lodash';
 import { default as React, useEffect, useState } from 'react';
 import { useWordleAreaController } from '../../../classes/TownController';
+import WordleAreaController from '../../../classes/WordleAreaController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
 
 export default function WordleGame({
   wordleArea,
+  wordleAreaController,
   closeGame,
 }: {
   wordleArea: WordleAreaInteractable;
+  wordleAreaController: WordleAreaController;
   closeGame: () => void;
 }): JSX.Element {
   const coveyTownController = useTownController();
-  const wordleAreaController = useWordleAreaController(wordleArea.name);
-
   const [guessHistory, setGuessHistory] = useState(wordleAreaController.guessHistory);
 
   const [input, setInput] = useState('');
@@ -44,6 +45,7 @@ export default function WordleGame({
   useEffect(() => {
     const setHistory = (newHistory: string[]) => {
       if (newHistory !== guessHistory) {
+        wordleAreaController.guessHistory = newHistory;
         setGuessHistory(newHistory);
       }
     };
