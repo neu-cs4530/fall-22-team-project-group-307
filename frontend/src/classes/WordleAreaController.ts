@@ -151,7 +151,7 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
       guessHistory: this.guessHistory,
       isWon: this.isGameWon,
       isLost: this.isGameLost,
-      occupantsByID: this.occupants.map(player => player.id),
+      occupantIDs: this.occupants.map(player => player.id),
     };
   }
 

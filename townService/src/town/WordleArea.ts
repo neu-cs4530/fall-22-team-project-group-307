@@ -83,6 +83,10 @@ export default class WordleArea extends InteractableArea {
     return this._isLost;
   }
 
+  public get occupantIDs(): string[] {
+    return this._occupants.map(eachOccupant => eachOccupant.id);
+  }
+
   /**
    * Creates a new WordleArea
    *
@@ -181,7 +185,7 @@ export default class WordleArea extends InteractableArea {
       guessHistory: this._guessHistory,
       isWon: this.isGameWon(),
       isLost: this.isGameLost(),
-      occupantsByID: this._occupants.map(player => player.id),
+      occupantIDs: this._occupants.map(player => player.id),
     };
   }
 
@@ -205,7 +209,7 @@ export default class WordleArea extends InteractableArea {
         guessHistory: [],
         isWon: false,
         isLost: false,
-        occupantsByID: [],
+        occupantIDs: [],
       },
       rect,
       townEmitter,
