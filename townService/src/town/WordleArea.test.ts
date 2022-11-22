@@ -220,7 +220,7 @@ describe('WordleArea', () => {
       guessHistory,
       isWon: false,
       isLost: false,
-      occupantIDs: testArea.occupantIDs,
+      occupantIDs: model.occupantIDs,
     });
   });
 });
