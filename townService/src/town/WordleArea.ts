@@ -85,10 +85,6 @@ export default class WordleArea extends InteractableArea {
     return this._isLost;
   }
 
-  public get occupantIDs(): string[] {
-    return this._occupants.map(eachOccupant => eachOccupant.id);
-  }
-
   /**
    * Creates a new WordleArea
    *
