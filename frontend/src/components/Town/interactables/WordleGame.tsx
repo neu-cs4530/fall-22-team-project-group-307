@@ -13,12 +13,12 @@ import {
   ModalOverlay,
   useToast,
 } from '@chakra-ui/react';
-import { default as React, useEffect, useState } from 'react';
+import _ from 'lodash';
+import { createContext, default as React, useContext, useEffect, useState } from 'react';
 import WordleAreaController from '../../../classes/WordleAreaController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
-import _ from 'lodash';
 
 export default function WordleGame({
   wordleArea,
@@ -43,7 +43,7 @@ export default function WordleGame({
   useEffect(() => {
     const setHistory = (newHistory: string[]) => {
       if (newHistory !== guessHistory) {
-        wordleAreaController.guessHistory = newHistory;
+        console.log(newHistory);
         setGuessHistory(newHistory);
       }
     };
@@ -69,7 +69,8 @@ export default function WordleGame({
       if (!isLengthError && !isSymbolError) {
         const inWordList = true; // TODO: Actually check to see if guess is in word list
         if (inWordList) {
-          setGuessHistory([...guessHistory, guess]);
+          wordleAreaController.guessHistory = [...guessHistory, guess];
+          coveyTownController.emitWordleAreaUpdate(wordleAreaController);
           setInput('');
           ev.currentTarget.value = '';
         } else {

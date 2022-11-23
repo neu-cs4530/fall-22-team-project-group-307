@@ -110,7 +110,6 @@ export function CreateSpectatorModal({
   closeGame: () => void;
 }): JSX.Element {
   const guessHistory = useWordleAreaHistory(wordleAreaController);
-
   return (
     <Modal isOpen={true} onClose={closeGame}>
       <ModalOverlay />
@@ -170,7 +169,7 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
     return <CreateWordleModal isOpen={!isPlaying} wordleArea={wordleArea} />;
   }
 
-  if (wordleAreaController.occupantIDs.length > 1 && isPlaying) {
+  if (wordleAreaController.occupantIDs.length > 1) {
     return (
       <CreateSpectatorModal wordleAreaController={wordleAreaController} closeGame={closeModal} />
     );
