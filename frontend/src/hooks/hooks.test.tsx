@@ -15,7 +15,6 @@ import TownController, {
   useActiveConversationAreas,
   usePlayers,
   useTownSettings,
-  useWordleAreaController,
 } from '../classes/TownController';
 import { EventNames, getTownEventListener, mockTownController } from '../TestUtils';
 import * as useTownController from './useTownController';

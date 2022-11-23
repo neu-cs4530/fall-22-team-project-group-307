@@ -14,7 +14,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import _ from 'lodash';
-import { createContext, default as React, useContext, useEffect, useState } from 'react';
+import { default as React, useEffect, useState } from 'react';
 import WordleAreaController from '../../../classes/WordleAreaController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
