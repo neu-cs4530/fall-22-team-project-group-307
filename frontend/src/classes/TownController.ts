@@ -19,9 +19,9 @@ import {
 } from '../types/CoveyTownSocket';
 import { isConversationArea, isViewingArea, isWordleArea } from '../types/TypeUtils';
 import ConversationAreaController from './ConversationAreaController';
-import WordleAreaController from './WordleAreaController';
 import PlayerController from './PlayerController';
 import ViewingAreaController from './ViewingAreaController';
+import WordleAreaController from './WordleAreaController';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY = 300;
 
@@ -631,6 +631,15 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
    */
   public emitViewingAreaUpdate(viewingArea: ViewingAreaController) {
     this._socket.emit('interactableUpdate', viewingArea.viewingAreaModel());
+  }
+
+  /**
+   * Emit a wordle area update to the townService
+   * @param wordleArea The Wordle Area Controller that is updated and should be emitted
+   *    with the event
+   */
+  public emitWordleAreaUpdate(wordleArea: WordleAreaController) {
+    this._socket.emit('interactableUpdate', wordleArea.toWordleAreaModel());
   }
 
   /**

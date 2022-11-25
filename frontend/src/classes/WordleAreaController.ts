@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import _ from 'lodash';
+import { useEffect, useState } from 'react';
 import TypedEmitter from 'typed-emitter';
 import { WordleArea as WordleAreaModel } from '../types/CoveyTownSocket';
 import PlayerController from './PlayerController';
@@ -12,6 +13,7 @@ export type WordleAreaEvents = {
   occupantsChange: (newOccupants: PlayerController[]) => void;
   playingChange: (newPlaying: boolean) => void;
   historyChange: (newHistory: string[]) => void;
+  spectatingChange: (newSpectating: boolean) => void;
 };
 
 /**
@@ -113,6 +115,9 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
     ) {
       this.emit('occupantsChange', newOccupants);
       this._occupants = newOccupants;
+      if (this._occupants.length > 1) {
+        this.emit('spectatingChange', true);
+      }
     }
   }
 
@@ -130,6 +135,14 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
 
   public set isGameLost(value: boolean) {
     this._model.isLost = value;
+  }
+
+  public get occupantIDs() {
+    return this._model.occupantIDs;
+  }
+
+  public set occupantIDs(value: string[]) {
+    this._model.occupantIDs = value;
   }
 
   /**
@@ -151,7 +164,7 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
       guessHistory: this.guessHistory,
       isWon: this.isGameWon,
       isLost: this.isGameLost,
-      occupantsByID: this.occupants.map(player => player.id),
+      occupantIDs: this.occupants.map(player => player.id),
     };
   }
 
@@ -167,5 +180,23 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
     this.guessHistory = updatedModel.guessHistory;
     this.isGameWon = updatedModel.isWon;
     this.isGameLost = updatedModel.isLost;
+    this.occupantIDs = updatedModel.occupantIDs;
   }
+}
+
+/**
+ * A react hook to retrieve the guess history of a WordleAreaController.
+ * If there is currently no topic defined, it will return an empty array.
+ *
+ * This hook will re-render any components that use it when the history changes.
+ */
+export function useWordleAreaHistory(area: WordleAreaController): string[] {
+  const [history, setHistory] = useState(area.guessHistory);
+  useEffect(() => {
+    area.addListener('historyChange', setHistory);
+    return () => {
+      area.removeListener('historyChange', setHistory);
+    };
+  }, [area]);
+  return history || [];
 }

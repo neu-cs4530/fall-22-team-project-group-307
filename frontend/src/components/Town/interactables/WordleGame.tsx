@@ -13,23 +13,23 @@ import {
   ModalOverlay,
   useToast,
 } from '@chakra-ui/react';
+import _ from 'lodash';
 import { default as React, useEffect, useState } from 'react';
-import { useWordleAreaController } from '../../../classes/TownController';
+import WordleAreaController from '../../../classes/WordleAreaController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
-import _ from 'lodash';
 
 export default function WordleGame({
   wordleArea,
+  wordleAreaController,
   closeGame,
 }: {
   wordleArea: WordleAreaInteractable;
+  wordleAreaController: WordleAreaController;
   closeGame: () => void;
 }): JSX.Element {
   const coveyTownController = useTownController();
-  const wordleAreaController = useWordleAreaController(wordleArea.name);
-
   const [guessHistory, setGuessHistory] = useState(wordleAreaController.guessHistory);
 
   const [input, setInput] = useState('');
@@ -43,6 +43,7 @@ export default function WordleGame({
   useEffect(() => {
     const setHistory = (newHistory: string[]) => {
       if (newHistory !== guessHistory) {
+        console.log(newHistory);
         setGuessHistory(newHistory);
       }
     };
@@ -68,7 +69,8 @@ export default function WordleGame({
       if (!isLengthError && !isSymbolError) {
         const inWordList = true; // TODO: Actually check to see if guess is in word list
         if (inWordList) {
-          setGuessHistory([...guessHistory, guess]);
+          wordleAreaController.guessHistory = [...guessHistory, guess];
+          coveyTownController.emitWordleAreaUpdate(wordleAreaController);
           setInput('');
           ev.currentTarget.value = '';
         } else {
