@@ -128,15 +128,9 @@ export default function WordleGame({
     }
   };
 
-  const handleReset = () => {
-    wordleAreaController.guessHistory = [];
-    coveyTownController.emitWordleAreaUpdate(wordleAreaController);
-  };
-
   // initialize default values for game components
   // assuming current view is mainPlayer and game has not been won or lost yet
   let winLossDisplay: JSX.Element = <></>;
-  let winLossButtons: JSX.Element = <></>;
   let gameBoard: JSX.Element = <Board guesses={guessHistory} />;
   let inputBox: JSX.Element = (
     <FormControl isInvalid={isSymbolError}>
@@ -160,38 +154,22 @@ export default function WordleGame({
   );
 
   // if spectator, removes inputBox
-  const isMainPlayer = coveyTownController.ourPlayer.id === wordleAreaController.mainPlayer;
-  if (!isMainPlayer) {
+  const isMainPlayer = coveyTownController.ourPlayer.id !== wordleAreaController.mainPlayer;
+  if (isMainPlayer) {
     inputBox = <></>;
   }
 
-  // if win/loss condition has been satisified, removes gameBoard, inputBox and renders winLossDisplay, winLossButtons*
-  // if spectator, removes playAgainButton
+  // if win/loss condition has been satisified, removes gameBoard, inputBox and renders winLossDisplay
   if (_.includes(guessHistory, solution) || guessHistory.length >= 6) {
     const boxColor = _.includes(guessHistory, solution) ? 'green' : 'tomato';
     const boxText = _.includes(guessHistory, solution)
-      ? `${isMainPlayer ? 'You' : mainPlayerName} won! :)`
-      : `${isMainPlayer ? 'You' : mainPlayerName} lost. :(`;
+      ? `${isMainPlayer ? mainPlayerName : 'You'} won! :)`
+      : `${isMainPlayer ? mainPlayerName : 'You'} lost. :(`;
 
     winLossDisplay = (
       <Box bg={boxColor} w='100%' p={4} color='white'>
         {boxText}
       </Box>
-    );
-
-    const playAgainButton: JSX.Element = (
-      <Button mr={3} onClick={handleReset}>
-        Play Again
-      </Button>
-    );
-
-    winLossButtons = (
-      <ModalFooter mt={0} pt={1}>
-        {isMainPlayer ? playAgainButton : <></>}
-        <Button colorScheme='blue' onClick={closeGame}>
-          Exit
-        </Button>
-      </ModalFooter>
     );
     gameBoard = <></>;
     inputBox = <></>;
@@ -200,12 +178,12 @@ export default function WordleGame({
   return (
     <Modal isOpen={true} onClose={closeGame}>
       <ModalOverlay />
-      <ModalContent mb={4}>
+      <ModalContent>
         <ModalCloseButton />
         <ModalHeader>
           {mainPlayerName}&apos;s {wordleArea?.name}{' '}
         </ModalHeader>
-        <ModalBody pb={1}>
+        <ModalBody mb={5}>
           <Flex
             mb={4}
             flexDir='column'
@@ -218,7 +196,6 @@ export default function WordleGame({
           </Flex>
           {inputBox}
         </ModalBody>
-        {winLossButtons}
       </ModalContent>
     </Modal>
   );

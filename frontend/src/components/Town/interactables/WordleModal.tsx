@@ -153,7 +153,7 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
     return <CreateWordleModal isOpen={!isPlaying} wordleArea={wordleArea} />;
   }
 
-  // else, return the component representing the actual Wordle game
+  //if true, then return the component representing the actual Wordle game
   return (
     <WordleGame
       wordleArea={wordleArea}
