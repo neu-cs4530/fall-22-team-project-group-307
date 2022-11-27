@@ -24,9 +24,9 @@ export default class WordleArea extends Interactable {
       this._infoTextBox = this.scene.add
         .text(
           this.scene.scale.width / 2,
-          this.scene.scale.height / 2,
+          this.scene.scale.height / 2 + 35,
           "You've found a Wordle game area!\nStart the game by pressing the spacebar.",
-          { color: '#000000', backgroundColor: '#FFFFFF' },
+          { color: '#000', backgroundColor: '#FFF' },
         )
         .setScrollFactor(0)
         .setDepth(30);
