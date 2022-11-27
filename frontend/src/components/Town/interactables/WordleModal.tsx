@@ -1,5 +1,6 @@
 import {
   Button,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,9 +12,11 @@ import {
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useInteractable, useWordleAreaController } from '../../../classes/TownController';
+import WordleAreaController, { useWordleAreaHistory } from '../../../classes/WordleAreaController';
 import useTownController from '../../../hooks/useTownController';
 import { WordleArea as WordleAreaModel } from '../../../types/CoveyTownSocket';
 import WordleAreaInteractable from './WordleArea';
+import Board from './WordleBoard';
 import WordleGame from './WordleGame';
 
 export function CreateWordleModal({
@@ -52,7 +55,6 @@ export function CreateWordleModal({
         isWon: false,
         isLost: false,
         occupantIDs: [],
-        mainPlayer: coveyTownController.ourPlayer.id,
       };
       try {
         await coveyTownController.createWordleArea(wordleToCreate);
@@ -100,6 +102,36 @@ export function CreateWordleModal({
   );
 }
 
+export function CreateSpectatorModal({
+  wordleAreaController,
+  closeGame,
+}: {
+  wordleAreaController: WordleAreaController;
+  closeGame: () => void;
+}): JSX.Element {
+  const guessHistory = useWordleAreaHistory(wordleAreaController);
+  return (
+    <Modal isOpen={true} onClose={closeGame}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalCloseButton />
+        <ModalHeader> </ModalHeader>
+        <ModalBody mb={5}>
+          <Flex
+            mb={4}
+            flexDir='column'
+            height='100%'
+            overflow={'hidden'}
+            alignItems='center'
+            justifyContent='space-evenly'>
+            <Board guesses={guessHistory} />
+          </Flex>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+}
+
 /**
  * The WordleArea monitors the player's interaction with a WordleArea on the map: displaying either
  * a popup to start wordle game, or if the game is already being played, the wordle game itself.
@@ -110,10 +142,6 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
   const townController = useTownController();
   const wordleAreaController = useWordleAreaController(wordleArea.name);
   const [isPlaying, setIsPlaying] = useState(wordleAreaController.isPlaying);
-
-  if (wordleAreaController) {
-    wordleAreaController.toWordleAreaModel();
-  }
 
   const closeModal = useCallback(() => {
     if (wordleArea) {
@@ -139,6 +167,12 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
   // if the isPlaying property of the WordleArea in question is false, return the select modal
   if (!isPlaying) {
     return <CreateWordleModal isOpen={!isPlaying} wordleArea={wordleArea} />;
+  }
+
+  if (wordleAreaController.occupantIDs.length > 1) {
+    return (
+      <CreateSpectatorModal wordleAreaController={wordleAreaController} closeGame={closeModal} />
+    );
   }
 
   //if true, then return the component representing the actual Wordle game

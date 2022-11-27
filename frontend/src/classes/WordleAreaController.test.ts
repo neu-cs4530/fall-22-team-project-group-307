@@ -21,7 +21,6 @@ describe('[T2] WordleAreaController', () => {
       isWon: false,
       isLost: false,
       occupantIDs: [],
-      mainPlayer: nanoid(),
     };
     const playerLocation: PlayerLocation = {
       moving: false,
@@ -115,16 +114,15 @@ describe('[T2] WordleAreaController', () => {
     });
   });
   describe('updateFrom', () => {
-    it('Updates all properties except id', () => {
+    it('Updates the isPlaying, elapsedTimeSec and video properties', () => {
       const newModel: WordleArea = {
         id: testAreaModel.id,
         isPlaying: true,
         currentScore: 0,
         guessHistory: ['guess'],
         isWon: true,
-        isLost: true,
-        occupantIDs: [nanoid()],
-        mainPlayer: nanoid(),
+        isLost: false,
+        occupantIDs: [],
       };
       testArea.updateFrom(newModel);
       expect(testArea.isPlaying).toEqual(newModel.isPlaying);
@@ -132,7 +130,6 @@ describe('[T2] WordleAreaController', () => {
       expect(testArea.guessHistory).toEqual(newModel.guessHistory);
       expect(testArea.isGameWon).toEqual(newModel.isWon);
       expect(testArea.isGameLost).toEqual(newModel.isLost);
-      expect(testArea.mainPlayer).toEqual(newModel.mainPlayer);
     });
     it('Does not update the id property', () => {
       const existingID = testArea.id;
@@ -144,7 +141,6 @@ describe('[T2] WordleAreaController', () => {
         isWon: true,
         isLost: false,
         occupantIDs: [],
-        mainPlayer: nanoid(),
       };
       testArea.updateFrom(newModel);
       expect(testArea.id).toEqual(existingID);
