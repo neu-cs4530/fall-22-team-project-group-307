@@ -143,6 +143,10 @@ export default class WordleArea extends InteractableArea {
     this._currentScore = this._guessScores[this.guessHistory.length - 1];
   }
 
+  public isValidGuess(guess: string) {
+    return guess.length === this._wordLength && DataAccess.getAccess().isValidWord(guess);
+  }
+
   /**
    * Removes a player from this wordle area.
    *
@@ -190,8 +194,10 @@ export default class WordleArea extends InteractableArea {
       isPlaying: this._isPlaying,
       currentScore: this._currentScore,
       guessHistory: this._guessHistory,
+      solution: this._solution,
       isWon: this.isGameWon(),
       isLost: this.isGameLost(),
+      isValidGuess: guess => DataAccess.getAccess().isValidWord(guess),
       occupantIDs: this._occupants.map(player => player.id),
       mainPlayer: this._mainPlayer,
     };
@@ -215,8 +221,10 @@ export default class WordleArea extends InteractableArea {
         id: name,
         currentScore: 0,
         guessHistory: [],
+        solution: DataAccess.getAccess().getValidWord(5),
         isWon: false,
         isLost: false,
+        isValidGuess: guess => DataAccess.getAccess().isValidWord(guess),
         occupantIDs: [],
         mainPlayer: '',
       },

@@ -1,7 +1,7 @@
 import { mock, mockClear, MockProxy } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
 import { WordleArea } from '../generated/client';
-import { PlayerLocation } from '../types/CoveyTownSocket';
+import { PlayerLocation, WordleArea as WordleAreaBig } from '../types/CoveyTownSocket';
 import PlayerController from './PlayerController';
 import TownController from './TownController';
 import WordleAreaController, { WordleAreaEvents } from './WordleAreaController';
@@ -9,7 +9,7 @@ import WordleAreaController, { WordleAreaEvents } from './WordleAreaController';
 describe('WordleAreaController', () => {
   // A valid WordleAreaController to be reused within the tests
   let testArea: WordleAreaController;
-  let testAreaModel: WordleArea;
+  let testAreaModel: WordleAreaBig;
   const townController: MockProxy<TownController> = mock<TownController>();
   const mockListeners = mock<WordleAreaEvents>();
   beforeEach(() => {
@@ -18,8 +18,10 @@ describe('WordleAreaController', () => {
       isPlaying: false,
       currentScore: 0,
       guessHistory: [],
+      solution: 'RIGHT',
       isWon: false,
       isLost: false,
+      isValidGuess: testArea.isValidGuess,
       occupantIDs: [],
       mainPlayer: nanoid(),
     };
@@ -137,7 +139,7 @@ describe('WordleAreaController', () => {
     });
     it('Does not update the id property', () => {
       const existingID = testArea.id;
-      const newModel: WordleArea = {
+      const newModel: WordleAreaBig = {
         id: nanoid(),
         isPlaying: true,
         currentScore: 0,
@@ -146,6 +148,8 @@ describe('WordleAreaController', () => {
         isLost: false,
         occupantIDs: [],
         mainPlayer: nanoid(),
+        solution: 'right',
+        isValidGuess: testAreaModel.isValidGuess,
       };
       testArea.updateFrom(newModel);
       expect(testArea.id).toEqual(existingID);
