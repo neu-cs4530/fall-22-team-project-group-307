@@ -163,7 +163,7 @@ export default function WordleGame({
               justifyContent='space-evenly'>
               <Board guesses={guessHistory} />
             </Flex>
-            <FormControl isInvalid={isSymbolError}>
+            <FormControl isInvalid={isSymbolError || isNumberError}>
               <Input
                 maxLength={5}
                 value={input}
@@ -172,8 +172,8 @@ export default function WordleGame({
                 errorBorderColor='red.300'
               />
               {!isSymbolError ? (
-                isLengthError ? (
-                  <FormHelperText>A Wordle is five characters long.</FormHelperText>
+                isNumberError ? (
+                  <FormErrorMessage>A guess cannot contain numbers.</FormErrorMessage>
                 ) : (
                   <FormHelperText>Happy guessing!</FormHelperText>
                 )
