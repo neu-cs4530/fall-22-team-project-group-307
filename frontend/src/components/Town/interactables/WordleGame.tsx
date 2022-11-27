@@ -37,7 +37,9 @@ export default function WordleGame({
     setInput(e.target.value);
 
   const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
+  const numberCharacters = /[0-9]/;
   const isSymbolError = specialCharacters.test(input);
+  const isNumberError = numberCharacters.test(input);
   const isLengthError = input.length != 5;
 
   useEffect(() => {
@@ -66,7 +68,22 @@ export default function WordleGame({
   const handleSubmit = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     const guess: string = ev.currentTarget.value;
     if (ev.key === 'Enter') {
-      if (!isLengthError && !isSymbolError) {
+      if (isSymbolError || isNumberError) {
+        toast({
+          title: 'Guess cannot contain symbols or numbers',
+          status: 'error',
+          duration: 1000,
+        });
+      }
+      if (isLengthError) {
+        toast({
+          title: 'Too short - a guess must be 5 characters',
+          status: 'error',
+          duration: 1000,
+        });
+      }
+
+      if (!isLengthError && !isSymbolError && !isNumberError) {
         const inWordList = true; // TODO: Actually check to see if guess is in word list
         if (inWordList) {
           wordleAreaController.guessHistory = [...guessHistory, guess];
@@ -82,7 +99,7 @@ export default function WordleGame({
         }
       } else {
         toast({
-          title: 'Invalid guess - try again',
+          title: 'Guess not in word list',
           status: 'error',
           duration: 1000,
         });
@@ -132,7 +149,7 @@ export default function WordleGame({
               justifyContent='space-evenly'>
               <Board guesses={guessHistory} />
             </Flex>
-            <FormControl isInvalid={isSymbolError}>
+            <FormControl isInvalid={isSymbolError || isNumberError}>
               <Input
                 maxLength={5}
                 value={input}
@@ -141,8 +158,8 @@ export default function WordleGame({
                 errorBorderColor='red.300'
               />
               {!isSymbolError ? (
-                isLengthError ? (
-                  <FormHelperText>A Wordle is five characters long.</FormHelperText>
+                isNumberError ? (
+                  <FormErrorMessage>A guess cannot contain numbers.</FormErrorMessage>
                 ) : (
                   <FormHelperText>Happy guessing!</FormHelperText>
                 )
