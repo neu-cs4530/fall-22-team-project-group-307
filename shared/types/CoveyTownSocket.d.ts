@@ -24,7 +24,7 @@ export type TownSettingsUpdate = {
   isPubliclyListed?: boolean;
 };
 
-export type Direction = 'front' | 'back' | 'left' | 'right';
+export type Direction = "front" | "back" | "left" | "right";
 export interface Player {
   id: string;
   userName: string;

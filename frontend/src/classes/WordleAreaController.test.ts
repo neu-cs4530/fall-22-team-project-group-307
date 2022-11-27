@@ -149,8 +149,6 @@ describe('WordleAreaController', () => {
         isLost: false,
         occupantIDs: [],
         mainPlayer: nanoid(),
-        solution: 'right',
-        isValidGuess: testAreaModel.isValidGuess,
       };
       testArea.updateFrom(newModel);
       expect(testArea.id).toEqual(existingID);

@@ -111,36 +111,6 @@ export function CreateWordleModal({
   );
 }
 
-export function CreateSpectatorModal({
-  wordleAreaController,
-  closeGame,
-}: {
-  wordleAreaController: WordleAreaController;
-  closeGame: () => void;
-}): JSX.Element {
-  const guessHistory = useWordleAreaHistory(wordleAreaController);
-  return (
-    <Modal isOpen={true} onClose={closeGame}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalCloseButton />
-        <ModalHeader> </ModalHeader>
-        <ModalBody mb={5}>
-          <Flex
-            mb={4}
-            flexDir='column'
-            height='100%'
-            overflow={'hidden'}
-            alignItems='center'
-            justifyContent='space-evenly'>
-            <Board guesses={guessHistory} solution={wordleAreaController.solution} />
-          </Flex>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-  );
-}
-
 /**
  * The WordleArea monitors the player's interaction with a WordleArea on the map: displaying either
  * a popup to start wordle game, or if the game is already being played, the wordle game itself.
@@ -183,7 +153,7 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
     return <CreateWordleModal isOpen={!isPlaying} wordleArea={wordleArea} />;
   }
 
-  // else, return the component representing the actual Wordle game
+  //if true, then return the component representing the actual Wordle game
   return (
     <WordleGame
       wordleArea={wordleArea}

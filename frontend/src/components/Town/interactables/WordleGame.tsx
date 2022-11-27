@@ -194,44 +194,32 @@ export default function WordleGame({
         </Button>
       </ModalFooter>
     );
-  } else {
-    return (
-      <Modal isOpen={true} onClose={closeGame}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalCloseButton />
-          <ModalHeader>{wordleArea?.name} </ModalHeader>
-          <ModalBody mb={5}>
-            <Flex
-              mb={4}
-              flexDir='column'
-              height='100%'
-              overflow={'hidden'}
-              alignItems='center'
-              justifyContent='space-evenly'>
-              <Board guesses={guessHistory} solution={wordleAreaController.solution} />
-            </Flex>
-            <FormControl isInvalid={isSymbolError}>
-              <Input
-                maxLength={5}
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={handleSubmit}
-                errorBorderColor='red.300'
-              />
-              {!isSymbolError ? (
-                isLengthError ? (
-                  <FormHelperText>A Wordle is five characters long.</FormHelperText>
-                ) : (
-                  <FormHelperText>Happy guessing!</FormHelperText>
-                )
-              ) : (
-                <FormErrorMessage>A guess cannot contain symbols.</FormErrorMessage>
-              )}
-            </FormControl>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    );
+    gameBoard = <></>;
+    inputBox = <></>;
   }
+
+  return (
+    <Modal isOpen={true} onClose={closeGame}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalCloseButton />
+        <ModalHeader>
+          {mainPlayerName}&apos;s {wordleArea?.name}{' '}
+        </ModalHeader>
+        <ModalBody mb={5}>
+          <Flex
+            mb={4}
+            flexDir='column'
+            height='100%'
+            overflow={'hidden'}
+            alignItems='center'
+            justifyContent='space-evenly'>
+            {gameBoard}
+            {winLossDisplay}
+          </Flex>
+          {inputBox}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
 }
