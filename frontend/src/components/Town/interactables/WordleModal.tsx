@@ -52,8 +52,10 @@ export function CreateWordleModal({
         isPlaying: true,
         currentScore: 0,
         guessHistory: [],
+        solution: '',
         isWon: false,
         isLost: false,
+        isValidGuess: () => false,
         occupantIDs: [],
       };
       try {

@@ -67,7 +67,7 @@ export default function WordleGame({
     const guess: string = ev.currentTarget.value;
     if (ev.key === 'Enter') {
       if (!isLengthError && !isSymbolError) {
-        const inWordList = true; // TODO: Actually check to see if guess is in word list
+        const inWordList = wordleAreaController.isValidGuess(guess);
         if (inWordList) {
           wordleAreaController.guessHistory = [...guessHistory, guess];
           coveyTownController.emitWordleAreaUpdate(wordleAreaController);
@@ -90,9 +90,11 @@ export default function WordleGame({
     }
   };
 
-  if (_.includes(guessHistory, 'guess') || guessHistory.length >= 6) {
-    const boxColor = _.includes(guessHistory, 'guess') ? 'green' : 'tomato';
-    const boxText = _.includes(guessHistory, 'guess') ? 'You won!' : 'You Lost.';
+  if (_.includes(guessHistory, wordleAreaController.solution) || guessHistory.length >= 6) {
+    const boxColor = _.includes(guessHistory, wordleAreaController.solution) ? 'green' : 'tomato';
+    const boxText = _.includes(guessHistory, wordleAreaController.solution)
+      ? 'You won!'
+      : 'You Lost.';
     return (
       <Modal isOpen={true} onClose={closeGame}>
         <ModalOverlay />
