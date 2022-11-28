@@ -39,7 +39,9 @@ export default function WordleGame({
   const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) =>
     setInput(e.target.value);
   const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
+  const numberCharacters = /[0-9]/;
   const isSymbolError = specialCharacters.test(input);
+  const isNumberError = numberCharacters.test(input);
   const isLengthError = input.length != 5;
 
   const toast = useToast();
@@ -75,8 +77,24 @@ export default function WordleGame({
   const handleSubmit = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     const guess: string = ev.currentTarget.value;
     if (ev.key === 'Enter') {
-      if (!isLengthError && !isSymbolError) {
-        const inWordList = DataAccess.getAccess().isValidWord(guess);
+      if (isSymbolError || isNumberError) {
+        toast({
+          title: 'Guess cannot contain symbols or numbers',
+          status: 'error',
+          duration: 1000,
+        });
+      }
+      if (isLengthError) {
+        toast({
+          title: 'Too short - a guess must be 5 characters',
+          status: 'error',
+          duration: 1000,
+        });
+      }
+
+      if (!isLengthError && !isSymbolError && !isNumberError) {
+        const inWordList = true; // TODO: Actually check to see if guess is in word list
+
         if (inWordList) {
           wordleAreaController.guessHistory = [...guessHistory, guess];
           coveyTownController.emitWordleAreaUpdate(wordleAreaController);
@@ -91,7 +109,7 @@ export default function WordleGame({
         }
       } else {
         toast({
-          title: 'Invalid guess - try again',
+          title: 'Guess not in word list',
           status: 'error',
           duration: 1000,
         });

@@ -89,7 +89,7 @@ export function CreateWordleModal({
       <ModalContent>
         <ModalCloseButton />
         <ModalHeader>{wordleArea?.name} </ModalHeader>
-        <ModalBody>Would you like to start a game of Wordle in this area?</ModalBody>
+        <ModalBody>Would you like to start a game of Wordle in this area? </ModalBody>
         <ModalFooter>
           <Button colorScheme='blue' mr={3} onClick={createWordle}>
             Create
