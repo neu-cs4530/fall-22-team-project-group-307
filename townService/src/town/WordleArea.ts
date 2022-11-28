@@ -140,7 +140,7 @@ export default class WordleArea extends InteractableArea {
     }
 
     this.guessHistory.push(guess.toUpperCase());
-    this._currentScore = this._guessScores[this.guessHistory.length - 1];
+    this.currentScore = this._guessScores[this.guessHistory.length - 1];
   }
 
   /**

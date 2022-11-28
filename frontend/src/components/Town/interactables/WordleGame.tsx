@@ -40,10 +40,26 @@ export default function WordleGame({
   const isSymbolError = specialCharacters.test(input);
   const isLengthError = input.length != 5;
 
+  const scoringArr = [1300, 800, 500, 300, 200, 100];
+  const score = wordleAreaController.score;
+
+  function scoreCalculator(guesses: string[]): number {
+    // this is hardcoded, replace with wordleAreaController.solution or whatever it's called
+    const solution = 'guess';
+    let scoreAddition = 0;
+    for (let i = 0; i < guesses.length; i++) {
+      for (let j = 0; j < guesses[i].length; j++) {
+        if (solution.includes(guesses[i][j])) {
+          scoreAddition += 25;
+        }
+      }
+    }
+    return scoreAddition;
+  }
+
   useEffect(() => {
     const setHistory = (newHistory: string[]) => {
       if (newHistory !== guessHistory) {
-        console.log(newHistory);
         setGuessHistory(newHistory);
       }
     };
@@ -70,6 +86,9 @@ export default function WordleGame({
         const inWordList = true; // TODO: Actually check to see if guess is in word list
         if (inWordList) {
           wordleAreaController.guessHistory = [...guessHistory, guess];
+          wordleAreaController.score =
+            scoringArr[wordleAreaController.guessHistory.length - 1] +
+            scoreCalculator(wordleAreaController.guessHistory);
           coveyTownController.emitWordleAreaUpdate(wordleAreaController);
           setInput('');
           ev.currentTarget.value = '';
@@ -92,7 +111,6 @@ export default function WordleGame({
 
   if (_.includes(guessHistory, 'guess') || guessHistory.length >= 6) {
     const boxColor = _.includes(guessHistory, 'guess') ? 'green' : 'tomato';
-    const boxText = _.includes(guessHistory, 'guess') ? 'You won!' : 'You Lost.';
     return (
       <Modal isOpen={true} onClose={closeGame}>
         <ModalOverlay />
@@ -108,7 +126,9 @@ export default function WordleGame({
               alignItems='center'
               justifyContent='space-evenly'>
               <Box bg={boxColor} w='100%' p={4} color='white'>
-                {boxText}
+                {_.includes(guessHistory, 'guess')
+                  ? `You won! Your Score was: ${score}`
+                  : `You Lost. Your Score was: ${score}`}
               </Box>
             </Flex>
           </ModalBody>
