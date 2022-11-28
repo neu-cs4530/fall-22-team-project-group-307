@@ -6,7 +6,7 @@ import PlayerController from './PlayerController';
 import TownController from './TownController';
 import WordleAreaController, { WordleAreaEvents } from './WordleAreaController';
 
-describe('[T2] WordleAreaController', () => {
+describe('WordleAreaController', () => {
   // A valid WordleAreaController to be reused within the tests
   let testArea: WordleAreaController;
   let testAreaModel: WordleArea;
