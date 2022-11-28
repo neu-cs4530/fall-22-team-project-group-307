@@ -154,14 +154,6 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
     this._model.isLost = value;
   }
 
-  public get isValidGuess() {
-    return this._model.isValidGuess;
-  }
-
-  public set isValidGuess(value: (guess: string) => boolean) {
-    this._model.isValidGuess = value;
-  }
-
   public get occupantIDs() {
     return this._model.occupantIDs;
   }
@@ -190,7 +182,6 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
       solution: this.solution,
       isWon: this.isGameWon,
       isLost: this.isGameLost,
-      isValidGuess: this.isValidGuess,
       occupantIDs: this.occupants.map(player => player.id),
     };
   }

@@ -55,7 +55,6 @@ export function CreateWordleModal({
         solution: '',
         isWon: false,
         isLost: false,
-        isValidGuess: () => false,
         occupantIDs: [],
       };
       try {
@@ -126,7 +125,7 @@ export function CreateSpectatorModal({
             overflow={'hidden'}
             alignItems='center'
             justifyContent='space-evenly'>
-            <Board guesses={guessHistory} />
+            <Board guesses={guessHistory} solution={wordleAreaController.solution} />
           </Flex>
         </ModalBody>
       </ModalContent>

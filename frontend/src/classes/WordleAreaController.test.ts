@@ -21,7 +21,6 @@ describe('[T2] WordleAreaController', () => {
       solution: 'RIGHT',
       isWon: false,
       isLost: false,
-      isValidGuess: testArea.isValidGuess,
       occupantIDs: [],
     };
     const playerLocation: PlayerLocation = {
@@ -122,11 +121,10 @@ describe('[T2] WordleAreaController', () => {
         isPlaying: true,
         currentScore: 0,
         guessHistory: ['guess'],
+        solution: 'right',
         isWon: true,
         isLost: false,
         occupantIDs: [],
-        solution: 'right',
-        isValidGuess: testAreaModel.isValidGuess,
       };
       testArea.updateFrom(newModel);
       expect(testArea.isPlaying).toEqual(newModel.isPlaying);
@@ -142,11 +140,10 @@ describe('[T2] WordleAreaController', () => {
         isPlaying: true,
         currentScore: 0,
         guessHistory: ['guess'],
+        solution: 'right',
         isWon: true,
         isLost: false,
         occupantIDs: [],
-        solution: 'right',
-        isValidGuess: testAreaModel.isValidGuess,
       };
       testArea.updateFrom(newModel);
       expect(testArea.id).toEqual(existingID);

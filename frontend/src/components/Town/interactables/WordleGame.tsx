@@ -19,6 +19,7 @@ import WordleAreaController from '../../../classes/WordleAreaController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
+import DataAccess from '../../../data/DataAccess';
 
 export default function WordleGame({
   wordleArea,
@@ -67,7 +68,7 @@ export default function WordleGame({
     const guess: string = ev.currentTarget.value;
     if (ev.key === 'Enter') {
       if (!isLengthError && !isSymbolError) {
-        const inWordList = wordleAreaController.isValidGuess(guess);
+        const inWordList = DataAccess.getAccess().isValidWord(guess);
         if (inWordList) {
           wordleAreaController.guessHistory = [...guessHistory, guess];
           coveyTownController.emitWordleAreaUpdate(wordleAreaController);
@@ -132,7 +133,7 @@ export default function WordleGame({
               overflow={'hidden'}
               alignItems='center'
               justifyContent='space-evenly'>
-              <Board guesses={guessHistory} />
+              <Board guesses={guessHistory} solution={wordleAreaController.solution} />
             </Flex>
             <FormControl isInvalid={isSymbolError}>
               <Input
