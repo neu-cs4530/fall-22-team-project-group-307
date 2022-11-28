@@ -92,6 +92,7 @@ describe('WordleAreaController', () => {
         isWon: testArea.isGameWon,
         isLost: testArea.isGameLost,
         occupantIDs: testArea.occupants.map(eachOccupant => eachOccupant.id),
+        mainPlayer: testAreaModel.mainPlayer,
       });
     });
   });
