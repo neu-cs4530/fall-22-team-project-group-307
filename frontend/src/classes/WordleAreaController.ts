@@ -162,14 +162,6 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
     this._model.occupantIDs = value;
   }
 
-  public get mainPlayer() {
-    return this._model.mainPlayer;
-  }
-
-  public set mainPlayer(value: string | undefined) {
-    this._model.mainPlayer = value;
-  }
-
   /**
    * A conversation area is empty if there are no occupants in it, or the topic is undefined.
    */
@@ -182,7 +174,6 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
    * townService's representation and is suitable for transmitting over the network.
    */
   toWordleAreaModel(): WordleAreaModel {
-    console.log(`mainPlayer: ${this.mainPlayer}`);
     return {
       id: this.id,
       isPlaying: this.isPlaying,
@@ -192,13 +183,12 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
       isWon: this.isGameWon,
       isLost: this.isGameLost,
       occupantIDs: this.occupants.map(player => player.id),
-      mainPlayer: this.mainPlayer,
     };
   }
 
   /**
    * Applies updates to this wordle area controller's model, setting the fields
-   * isPlaying, score, guessHistory, isGameWon, isGameLost, occupantIDs, and mainPlayer
+   * isPlaying and score
    *
    * @param updatedModel
    */
@@ -209,7 +199,6 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
     this.isGameWon = updatedModel.isWon;
     this.isGameLost = updatedModel.isLost;
     this.occupantIDs = updatedModel.occupantIDs;
-    this.mainPlayer = updatedModel.mainPlayer;
   }
 }
 
