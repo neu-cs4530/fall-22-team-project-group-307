@@ -165,7 +165,6 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
    * townService's representation and is suitable for transmitting over the network.
    */
   toWordleAreaModel(): WordleAreaModel {
-    console.log(`mainPlayer: ${this.mainPlayer}`);
     return {
       id: this.id,
       isPlaying: this.isPlaying,
