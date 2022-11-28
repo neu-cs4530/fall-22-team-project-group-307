@@ -16,6 +16,16 @@ import { WordleArea as WordleAreaModel } from '../../../types/CoveyTownSocket';
 import WordleAreaInteractable from './WordleArea';
 import WordleGame from './WordleGame';
 
+/**
+ * Renders a Modal prompting the player interacting with this WordleArea to start a game.
+ *
+ * This creates a new WordleArea with isPlaying set to true and mainPlayer set as the player
+ * viewing the modal.
+ *
+ * @prop {boolean} isOpen - flag controlling whether or not modal should open.
+ * @prop {WordleAreaInteractable} wordleArea - interactable representing the wordle area.
+ * @returns {JSX.Element} The modal.
+ */
 export function CreateWordleModal({
   isOpen,
   wordleArea,
@@ -104,7 +114,8 @@ export function CreateWordleModal({
  * The WordleArea monitors the player's interaction with a WordleArea on the map: displaying either
  * a popup to start wordle game, or if the game is already being played, the wordle game itself.
  *
- * @param props: the wordle area interactable that is being interacted with
+ * @prop {WordleAreaInteractable} wordleArea - interactable representing the wordle area.
+ * @returns {JSX.Element} either a WordleGame component or a CreateWordleModal component.
  */
 export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable }): JSX.Element {
   const townController = useTownController();
@@ -154,6 +165,8 @@ export function WordleArea({ wordleArea }: { wordleArea: WordleAreaInteractable 
 /**
  * The WordleAreaWrapper is suitable to be *always* rendered inside of a town, and
  * will activate only if the player begins interacting with a wordle area.
+ *
+ * @returns {JSX.Element} The wrapper component.
  */
 export default function WordleAreaWrapper(): JSX.Element {
   const wordleArea = useInteractable<WordleAreaInteractable>('wordleArea');

@@ -23,6 +23,17 @@ import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
 
+/**
+ * Renders a modal representing the actual game of Wordle including the board and input box.
+ *
+ * Renders a new win/loss screen upon completion of game.
+ * If viewing player is a spectator, does not allow for guess submission or abiliity to restart.
+ *
+ * @prop {WordleAreaInteractable} wordleArea - interactable representing the associated wordle area.
+ * @prop {WordleAreaController} wordleAreaController - controller representing the associated wordle area.
+ * @prop {() => void} closeGame - function to call when closing modal housing the game.
+ * @returns the modal representing the game.
+ */
 export default function WordleGame({
   wordleArea,
   wordleAreaController,
