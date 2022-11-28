@@ -19,7 +19,7 @@ export default class WordleArea extends InteractableArea {
 
   private _guessHistory: string[];
 
-  private _mainPlayer: string | undefined;
+  private _mainPlayer: Player | undefined;
 
   private _spectatorPlayers: Player[];
 
@@ -61,11 +61,11 @@ export default class WordleArea extends InteractableArea {
     this._guessHistory = history;
   }
 
-  public get mainPlayer(): string | undefined {
+  public get mainPlayer(): Player | undefined {
     return this._mainPlayer;
   }
 
-  public set mainPlayer(newPlayer: string | undefined) {
+  public set mainPlayer(newPlayer: Player | undefined) {
     this._mainPlayer = newPlayer;
   }
 
@@ -164,20 +164,13 @@ export default class WordleArea extends InteractableArea {
    *
    * @param wordleArea updated model
    */
-  public updateModel({
-    isPlaying,
-    currentScore,
-    guessHistory,
-    occupantIDs,
-    mainPlayer,
-  }: WordleAreaModel) {
+  public updateModel({ isPlaying, currentScore, guessHistory, occupantIDs }: WordleAreaModel) {
     this._isPlaying = isPlaying;
     this._currentScore = currentScore;
     this._guessHistory = guessHistory;
     this._isWon = this.isGameWon();
     this._isLost = this.isGameLost();
     this.occupantIDs = occupantIDs;
-    this._mainPlayer = mainPlayer;
   }
 
   /**
@@ -193,7 +186,6 @@ export default class WordleArea extends InteractableArea {
       isWon: this.isGameWon(),
       isLost: this.isGameLost(),
       occupantIDs: this._occupants.map(player => player.id),
-      mainPlayer: this._mainPlayer,
     };
   }
 
@@ -218,7 +210,6 @@ export default class WordleArea extends InteractableArea {
         isWon: false,
         isLost: false,
         occupantIDs: [],
-        mainPlayer: '',
       },
       rect,
       townEmitter,
