@@ -70,8 +70,8 @@ describe('WordleArea', () => {
       expect(testArea.mainPlayer).toEqual(undefined);
     });
     it('Sets the mainPlayer value', () => {
-      testArea.mainPlayer = newPlayer;
-      expect(testArea.mainPlayer).toEqual(newPlayer);
+      testArea.mainPlayer = newPlayer.id;
+      expect(testArea.mainPlayer).toEqual(newPlayer.id);
       testArea.mainPlayer = undefined;
       expect(testArea.mainPlayer).toEqual(undefined);
     });
