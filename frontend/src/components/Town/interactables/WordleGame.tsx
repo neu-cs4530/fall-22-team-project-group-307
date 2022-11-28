@@ -111,6 +111,7 @@ export default function WordleGame({
   };
 
   const handleReset = () => {
+    // TODO: Will need to reset score here
     wordleAreaController.guessHistory = [];
     coveyTownController.emitWordleAreaUpdate(wordleAreaController);
   };
@@ -198,6 +199,7 @@ export default function WordleGame({
             {gameBoard}
             {winLossDisplay}
           </Flex>
+          {/* TODO: score component here */}
           {inputBox}
         </ModalBody>
         {winLossButtons}
