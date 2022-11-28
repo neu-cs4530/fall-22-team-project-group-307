@@ -62,7 +62,6 @@ export function CreateWordleModal({
         solution: '',
         isWon: false,
         isLost: false,
-        isValidGuess: () => false,
         occupantIDs: [],
         mainPlayer: coveyTownController.ourPlayer.id,
       };
@@ -107,6 +106,36 @@ export function CreateWordleModal({
           </Button>
           <Button onClick={closeModal}>Cancel</Button>
         </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
+
+export function CreateSpectatorModal({
+  wordleAreaController,
+  closeGame,
+}: {
+  wordleAreaController: WordleAreaController;
+  closeGame: () => void;
+}): JSX.Element {
+  const guessHistory = useWordleAreaHistory(wordleAreaController);
+  return (
+    <Modal isOpen={true} onClose={closeGame}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalCloseButton />
+        <ModalHeader> </ModalHeader>
+        <ModalBody mb={5}>
+          <Flex
+            mb={4}
+            flexDir='column'
+            height='100%'
+            overflow={'hidden'}
+            alignItems='center'
+            justifyContent='space-evenly'>
+            <Board guesses={guessHistory} solution={wordleAreaController.solution} />
+          </Flex>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );

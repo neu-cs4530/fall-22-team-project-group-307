@@ -1,5 +1,7 @@
 import { mock, mockClear } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
+import { TokenListInstanceCreateOptions } from 'twilio/lib/rest/api/v2010/account/token';
+import { BooleanLiteral } from 'typescript';
 import Player from '../lib/Player';
 import { getLastEmittedEvent } from '../TestUtils';
 import { TownEmitter } from '../types/CoveyTownSocket';
@@ -15,11 +17,21 @@ describe('WordleArea', () => {
   const isPlaying = true;
   const currentScore = 8;
   const guessHistory = ['AUDIO', 'STONE'];
+  const solution = 'RIGHT';
 
   beforeEach(() => {
     mockClear(townEmitter);
     testArea = new WordleArea(
-      { id, isPlaying, currentScore, guessHistory, isWon: false, isLost: false, occupantIDs: [] },
+      {
+        id,
+        isPlaying,
+        currentScore,
+        guessHistory,
+        solution,
+        isWon: false,
+        isLost: false,
+        occupantIDs: [],
+      },
       testAreaBox,
       townEmitter,
     );
@@ -29,6 +41,7 @@ describe('WordleArea', () => {
         isPlaying: true,
         currentScore,
         guessHistory: [],
+        solution: 'right',
         isWon: false,
         isLost: false,
         occupantIDs: [],
@@ -190,6 +203,7 @@ describe('WordleArea', () => {
         isPlaying: false,
         currentScore,
         guessHistory,
+        solution,
         isWon: false,
         isLost: false,
         occupantIDs: [],
@@ -203,6 +217,7 @@ describe('WordleArea', () => {
       isPlaying: false,
       currentScore: 2,
       guessHistory: ['FIRST'],
+      solution: 'OTHER',
       isWon: false,
       isLost: false,
       occupantIDs: [],

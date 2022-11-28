@@ -22,6 +22,7 @@ import WordleAreaController from '../../../classes/WordleAreaController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
+import DataAccess from '../../../data/DataAccess';
 
 /**
  * Renders a modal representing the actual game of Wordle including the board and input box.
@@ -193,34 +194,44 @@ export default function WordleGame({
         </Button>
       </ModalFooter>
     );
-    gameBoard = <></>;
-    inputBox = <></>;
+  } else {
+    return (
+      <Modal isOpen={true} onClose={closeGame}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalHeader>{wordleArea?.name} </ModalHeader>
+          <ModalBody mb={5}>
+            <Flex
+              mb={4}
+              flexDir='column'
+              height='100%'
+              overflow={'hidden'}
+              alignItems='center'
+              justifyContent='space-evenly'>
+              <Board guesses={guessHistory} solution={wordleAreaController.solution} />
+            </Flex>
+            <FormControl isInvalid={isSymbolError}>
+              <Input
+                maxLength={5}
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleSubmit}
+                errorBorderColor='red.300'
+              />
+              {!isSymbolError ? (
+                isLengthError ? (
+                  <FormHelperText>A Wordle is five characters long.</FormHelperText>
+                ) : (
+                  <FormHelperText>Happy guessing!</FormHelperText>
+                )
+              ) : (
+                <FormErrorMessage>A guess cannot contain symbols.</FormErrorMessage>
+              )}
+            </FormControl>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
   }
-
-  return (
-    <Modal isOpen={true} onClose={closeGame}>
-      <ModalOverlay />
-      <ModalContent mb={4}>
-        <ModalCloseButton />
-        <ModalHeader>
-          {mainPlayerName}&apos;s {wordleArea?.name}{' '}
-        </ModalHeader>
-        <ModalBody pb={1}>
-          <Flex
-            mb={4}
-            flexDir='column'
-            height='100%'
-            overflow={'hidden'}
-            alignItems='center'
-            justifyContent='space-evenly'>
-            {gameBoard}
-            {winLossDisplay}
-          </Flex>
-          {/* TODO: score component here */}
-          {inputBox}
-        </ModalBody>
-        {winLossButtons}
-      </ModalContent>
-    </Modal>
-  );
 }

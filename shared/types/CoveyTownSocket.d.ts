@@ -77,7 +77,6 @@ export interface WordleArea {
   solution: string,
   isWon: boolean;
   isLost: boolean;
-  isValidGuess: (guess: string) => boolean;
   occupantIDs: string[];
   mainPlayer?: string;
 }

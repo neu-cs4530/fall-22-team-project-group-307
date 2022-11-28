@@ -21,7 +21,6 @@ describe('WordleAreaController', () => {
       solution: 'RIGHT',
       isWon: false,
       isLost: false,
-      isValidGuess: testArea.isValidGuess,
       occupantIDs: [],
       mainPlayer: nanoid(),
     };
@@ -124,6 +123,7 @@ describe('WordleAreaController', () => {
         isPlaying: true,
         currentScore: 0,
         guessHistory: ['guess'],
+        solution: 'right',
         isWon: true,
         isLost: true,
         occupantIDs: [nanoid()],
@@ -144,6 +144,7 @@ describe('WordleAreaController', () => {
         isPlaying: true,
         currentScore: 0,
         guessHistory: ['guess'],
+        solution: 'right',
         isWon: true,
         isLost: false,
         occupantIDs: [],
