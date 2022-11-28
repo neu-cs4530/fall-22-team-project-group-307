@@ -99,6 +99,12 @@ export default function WordleGame({
     }
   };
 
+  const handleReset = () => {
+    // TODO: Will need to reset score here
+    wordleAreaController.guessHistory = [];
+    coveyTownController.emitWordleAreaUpdate(wordleAreaController);
+  };
+
   // initialize default values for game components
   // assuming current view is mainPlayer and game has not been won or lost yet
   let winLossDisplay: JSX.Element = <></>;
@@ -165,6 +171,7 @@ export default function WordleGame({
             {gameBoard}
             {winLossDisplay}
           </Flex>
+          {/* TODO: score component here */}
           {inputBox}
         </ModalBody>
       </ModalContent>
