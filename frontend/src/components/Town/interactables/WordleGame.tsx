@@ -121,30 +121,71 @@ export default function WordleGame({
     }
   };
 
-  if (_.includes(guessHistory, 'guess') || guessHistory.length >= 6) {
-    const boxColor = _.includes(guessHistory, 'guess') ? 'green' : 'tomato';
-    const boxText = _.includes(guessHistory, 'guess') ? 'You won!' : 'You Lost.';
-    return (
-      <Modal isOpen={true} onClose={closeGame}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalCloseButton />
-          <ModalHeader>{wordleArea?.name} </ModalHeader>
-          <ModalBody mb={5}>
-            <Flex
-              mb={4}
-              flexDir='column'
-              height='100%'
-              overflow={'hidden'}
-              alignItems='center'
-              justifyContent='space-evenly'>
-              <Box bg={boxColor} w='100%' p={4} color='white'>
-                {boxText}
-              </Box>
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+  const handleReset = () => {
+    // TODO: Will need to reset score here
+    wordleAreaController.guessHistory = [];
+    coveyTownController.emitWordleAreaUpdate(wordleAreaController);
+  };
+
+  // initialize default values for game components
+  // assuming current view is mainPlayer and game has not been won or lost yet
+  let winLossDisplay: JSX.Element = <></>;
+  let winLossButtons: JSX.Element = <></>;
+  let gameBoard: JSX.Element = <Board guesses={guessHistory} />;
+  let inputBox: JSX.Element = (
+      <FormControl isInvalid={isSymbolError || isNumberError}>
+      <Input
+        maxLength={5}
+        value={input}
+        onChange={handleInputChange}
+        onKeyDown={handleSubmit}
+        errorBorderColor='red.300'
+      />
+      {!isSymbolError ? (
+        isNumberError ? (
+          <FormErrorMessage>A guess cannot contain numbers.</FormErrorMessage>
+        ) : (
+          <FormHelperText>Happy guessing!</FormHelperText>
+        )
+      ) : (
+        <FormErrorMessage>A guess cannot contain symbols.</FormErrorMessage>
+      )}
+    </FormControl>
+  );
+
+  // if spectator, removes inputBox
+  const isMainPlayer = coveyTownController.ourPlayer.id === wordleAreaController.mainPlayer;
+  if (!isMainPlayer) {
+    inputBox = <></>;
+  }
+
+  // if win/loss condition has been satisified, removes gameBoard, inputBox and renders winLossDisplay, winLossButtons*
+  // if spectator, removes playAgainButton
+  if (_.includes(guessHistory, solution) || guessHistory.length >= 6) {
+    const boxColor = _.includes(guessHistory, solution) ? 'green' : 'tomato';
+    const boxText = _.includes(guessHistory, solution)
+      ? `${isMainPlayer ? 'You' : mainPlayerName} won! :)`
+      : `${isMainPlayer ? 'You' : mainPlayerName} lost. :(`;
+
+    winLossDisplay = (
+      <Box bg={boxColor} w='100%' p={4} color='white'>
+        {boxText}
+      </Box>
+    );
+
+    const playAgainButton: JSX.Element = (
+      <Button mr={3} onClick={handleReset}>
+        Play Again
+      </Button>
+    );
+
+    winLossButtons = (
+      <ModalFooter mt={0} pt={1}>
+        {isMainPlayer ? playAgainButton : <></>}
+        <Button colorScheme='blue' onClick={closeGame}>
+          Exit
+        </Button>
+      </ModalFooter>
     );
   } else {
     return (
