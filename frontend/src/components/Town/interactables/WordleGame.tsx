@@ -139,7 +139,7 @@ export default function WordleGame({
   let winLossButtons: JSX.Element = <></>;
   let gameBoard: JSX.Element = <Board guesses={guessHistory} />;
   let inputBox: JSX.Element = (
-    <FormControl isInvalid={isSymbolError}>
+      <FormControl isInvalid={isSymbolError || isNumberError}>
       <Input
         maxLength={5}
         value={input}
@@ -148,8 +148,8 @@ export default function WordleGame({
         errorBorderColor='red.300'
       />
       {!isSymbolError ? (
-        isLengthError ? (
-          <FormHelperText>A Wordle is five characters long.</FormHelperText>
+        isNumberError ? (
+          <FormErrorMessage>A guess cannot contain numbers.</FormErrorMessage>
         ) : (
           <FormHelperText>Happy guessing!</FormHelperText>
         )
