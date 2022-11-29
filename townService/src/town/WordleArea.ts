@@ -9,8 +9,6 @@ export default class WordleArea extends InteractableArea {
 
   private _maxGuesses = 6;
 
-  private _guessScores = [13, 8, 5, 3, 2, 1]; // TODO: Update this
-
   private _solution: string;
 
   private _isPlaying: boolean;
@@ -104,8 +102,8 @@ export default class WordleArea extends InteractableArea {
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
     this._solution = DataAccess.getAccess().getValidWord(5);
-    this._isWon = this.isGameWon();
-    this._isLost = this.isGameLost();
+    this._isWon = this._isGameWon();
+    this._isLost = this._isGameLost();
     this.occupantIDs = occupantIDs;
   }
 
@@ -113,7 +111,7 @@ export default class WordleArea extends InteractableArea {
    * Checks if the game is currently in a state which references a player win.
    * @returns if the player has won
    */
-  public isGameWon(): boolean {
+  private _isGameWon(): boolean {
     return this.guessHistory[this.guessHistory.length - 1] === this.solution;
   }
 
@@ -121,8 +119,8 @@ export default class WordleArea extends InteractableArea {
    * Checks if the game is currently in a state which references a player loss.
    * @returns if the player has lost
    */
-  public isGameLost(): boolean {
-    return !this.isGameWon() && this.guessHistory.length >= this._maxGuesses;
+  private _isGameLost(): boolean {
+    return !this._isGameWon() && this.guessHistory.length >= this._maxGuesses;
   }
 
   /**
@@ -141,19 +139,32 @@ export default class WordleArea extends InteractableArea {
     }
   }
 
-  // TODO: Write JSDoc
+  /**
+   * Calculates the current score of this wordle game.
+   *
+   * Adding 25 for each yellow letter, and 50 for each green in addition to score
+   * based on how many attempts it took for the player to win.
+   *
+   * @returns the current score.
+   */
   private _calculateScore(): number {
+    const guessScores = [2000, 1500, 1000, 500, 250, 150];
     let bonusPoints = 0;
     this._guessHistory.forEach(eachGuess => {
-      for (let i = 0; i < eachGuess.length; i++) {
-        if (this._solution.includes(eachGuess[i])) {
-          bonusPoints += 25;
+      if (eachGuess !== this._solution) {
+        for (let i = 0; i < eachGuess.length; i++) {
+          if (this._solution[i] === eachGuess[i]) {
+            // 50 points for each green letter
+            bonusPoints += 50;
+          } else if (this._solution.includes(eachGuess[i])) {
+            // 25 for each yellow
+            bonusPoints += 25;
+          }
         }
       }
     });
-    const isMoreThanZeroGuesses = this.guessHistory.length > 0;
     return (
-      bonusPoints + (isMoreThanZeroGuesses ? this._guessScores[this.guessHistory.length - 1] : 0)
+      bonusPoints + (this._isWon || this._isLost ? guessScores[this.guessHistory.length - 1] : 0)
     );
   }
 
@@ -166,12 +177,11 @@ export default class WordleArea extends InteractableArea {
     this._isPlaying = isPlaying;
     this._guessHistory = guessHistory;
     this._currentScore = this._calculateScore();
-    this._isWon = this.isGameWon();
-    this._isLost = this.isGameLost();
+    this._isWon = this._isGameWon();
+    this._isLost = this._isGameLost();
     this.occupantIDs = occupantIDs;
     this._mainPlayer = mainPlayer;
 
-    console.log(`Solution: ${this._solution}`);
     this._emitAreaChanged();
   }
 
@@ -183,10 +193,10 @@ export default class WordleArea extends InteractableArea {
     return {
       id: this.id,
       isPlaying: this._isPlaying,
-      currentScore: this._calculateScore(),
+      currentScore: this._currentScore,
       guessHistory: this._guessHistory,
-      isWon: this.isGameWon(),
-      isLost: this.isGameLost(),
+      isWon: this._isWon,
+      isLost: this._isLost,
       occupantIDs: this._occupants.map(player => player.id),
       mainPlayer: this._mainPlayer,
     };

@@ -98,7 +98,7 @@ export default function WordleGame({
 
   // checks validity of guess submitted from KeyboardEvent, submits to guessHistory if valid
   const handleSubmit = (ev: React.KeyboardEvent<HTMLInputElement>) => {
-    const guess: string = ev.currentTarget.value;
+    const guess: string = ev.currentTarget.value.toLowerCase();
     if (ev.key === 'Enter') {
       if (isSymbolError || isNumberError) {
         toast({
@@ -123,7 +123,6 @@ export default function WordleGame({
           coveyTownController.emitWordleAreaUpdate(wordleAreaController);
           setInput('');
           ev.currentTarget.value = '';
-          console.log(JSON.stringify(wordleAreaController.toWordleAreaModel()));
         } else {
           toast({
             title: 'Guess not in word list',
