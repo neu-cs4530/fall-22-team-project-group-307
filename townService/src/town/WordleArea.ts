@@ -19,8 +19,6 @@ export default class WordleArea extends InteractableArea {
 
   private _mainPlayer: string | undefined;
 
-  private _spectatorPlayers: Player[];
-
   private _isWon: boolean;
 
   private _isLost: boolean;
@@ -83,19 +81,18 @@ export default class WordleArea extends InteractableArea {
    * @param townEmitter a broadcast emitter that can be used to emit updates to players
    */
   public constructor(
-    { id, isPlaying, currentScore, guessHistory, occupantIDs }: WordleAreaModel,
+    { id, isPlaying, guessHistory, occupantIDs }: WordleAreaModel,
     coordinates: BoundingBox,
     townEmitter: TownEmitter,
   ) {
     super(id, coordinates, townEmitter);
-    this._currentScore = currentScore;
     this._isPlaying = isPlaying;
     this._guessHistory = guessHistory;
     this._mainPlayer = undefined;
-    this._spectatorPlayers = [];
     this._solution = DataAccess.getAccess().getValidWord(5);
-    this._isWon = this._isGameWon();
     this._isLost = this._isGameLost();
+    this._isWon = this._isGameWon();
+    this._currentScore = this._calculateScore();
     this.occupantIDs = occupantIDs;
   }
 
