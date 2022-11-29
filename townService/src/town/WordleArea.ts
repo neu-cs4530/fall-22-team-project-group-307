@@ -81,7 +81,7 @@ export default class WordleArea extends InteractableArea {
    * @param townEmitter a broadcast emitter that can be used to emit updates to players
    */
   public constructor(
-    { id, isPlaying, guessHistory, occupantIDs }: WordleAreaModel,
+    { id, isPlaying, currentScore, guessHistory, occupantIDs }: WordleAreaModel,
     coordinates: BoundingBox,
     townEmitter: TownEmitter,
   ) {
@@ -92,7 +92,7 @@ export default class WordleArea extends InteractableArea {
     this._solution = DataAccess.getAccess().getValidWord(5);
     this._isLost = this._isGameLost();
     this._isWon = this._isGameWon();
-    this._currentScore = this._calculateScore();
+    this._currentScore = currentScore;
     this.occupantIDs = occupantIDs;
   }
 
