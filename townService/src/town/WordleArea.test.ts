@@ -74,17 +74,6 @@ describe('WordleArea', () => {
       testArea.guessHistory = [];
       expect(testArea.guessHistory).toEqual([]);
     });
-    it('Gets the initialized spectatorPlayers value', () => {
-      expect(testArea.spectatorPlayers).toEqual([]);
-    });
-    it('Sets the spectatorPlayers value', () => {
-      testArea.spectatorPlayers = [newPlayer];
-      expect(testArea.spectatorPlayers).toEqual([newPlayer]);
-      testArea.spectatorPlayers = [newPlayer, newPlayer];
-      expect(testArea.spectatorPlayers).toEqual([newPlayer, newPlayer]);
-      testArea.spectatorPlayers = [];
-      expect(testArea.spectatorPlayers).toEqual([]);
-    });
   });
   describe('remove', () => {
     it('Removes the player from the list of occupants and emits an interactableUpdate event', () => {

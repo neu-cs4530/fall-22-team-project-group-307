@@ -67,14 +67,6 @@ export default class WordleArea extends InteractableArea {
     this._mainPlayer = newPlayer;
   }
 
-  public get spectatorPlayers(): Player[] {
-    return this._spectatorPlayers;
-  }
-
-  public set spectatorPlayers(spectators: Player[]) {
-    this._spectatorPlayers = spectators;
-  }
-
   public get isWon(): boolean {
     return this._isWon;
   }
