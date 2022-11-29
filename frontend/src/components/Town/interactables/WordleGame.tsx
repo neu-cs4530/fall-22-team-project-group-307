@@ -142,6 +142,7 @@ export default function WordleGame({
 
   const handleReset = () => {
     wordleAreaController.guessHistory = [];
+    // TODO: the solution should also reset here.
     coveyTownController.emitWordleAreaUpdate(wordleAreaController);
   };
 
