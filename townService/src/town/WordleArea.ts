@@ -112,7 +112,7 @@ export default class WordleArea extends InteractableArea {
    * @returns if the player has won
    */
   private _isGameWon(): boolean {
-    return this.guessHistory[this.guessHistory.length - 1] === this.solution;
+    return !this._isLost && this.guessHistory[this.guessHistory.length - 1] === this.solution;
   }
 
   /**
@@ -120,7 +120,7 @@ export default class WordleArea extends InteractableArea {
    * @returns if the player has lost
    */
   private _isGameLost(): boolean {
-    return !this._isGameWon() && this.guessHistory.length >= this._maxGuesses;
+    return !this._isWon && this.guessHistory.length >= this._maxGuesses;
   }
 
   /**
@@ -169,18 +169,20 @@ export default class WordleArea extends InteractableArea {
   }
 
   /**
-   * Updates the state of this WordleArea, setting the active state, players, and game state
+   * Updates the state of this WordleArea, setting the active state, guess history, occupants, and main player.
+   *
+   * Also calculates the current score, and computes whether the game has been won or lost.
    *
    * @param wordleArea updated model
    */
   public updateModel({ isPlaying, guessHistory, occupantIDs, mainPlayer }: WordleAreaModel) {
     this._isPlaying = isPlaying;
     this._guessHistory = guessHistory;
-    this._currentScore = this._calculateScore();
-    this._isWon = this._isGameWon();
-    this._isLost = this._isGameLost();
     this.occupantIDs = occupantIDs;
     this._mainPlayer = mainPlayer;
+    this._isLost = this._isGameLost();
+    this._isWon = this._isGameWon();
+    this._currentScore = this._calculateScore();
 
     this._emitAreaChanged();
   }
