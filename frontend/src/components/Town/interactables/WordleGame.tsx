@@ -45,6 +45,7 @@ export default function WordleGame({
 }): JSX.Element {
   const coveyTownController = useTownController();
   const [guessHistory, setGuessHistory] = useState(wordleAreaController.guessHistory);
+  const [score, setScore] = useState(wordleAreaController.score);
   const [input, setInput] = useState('');
   const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) =>
     setInput(e.target.value);
@@ -74,6 +75,18 @@ export default function WordleGame({
       wordleAreaController.removeListener('historyChange', setHistory);
     };
   }, [wordleAreaController, guessHistory]);
+
+  useEffect(() => {
+    const setCurrScore = (newScore: number) => {
+      if (newScore !== score) {
+        setScore(newScore);
+      }
+    };
+    wordleAreaController.addListener('scoreChange', setCurrScore);
+    return () => {
+      wordleAreaController.removeListener('scoreChange', setCurrScore);
+    };
+  }, [wordleAreaController, score]);
 
   useEffect(() => {
     if (wordleArea) {
@@ -110,6 +123,7 @@ export default function WordleGame({
           coveyTownController.emitWordleAreaUpdate(wordleAreaController);
           setInput('');
           ev.currentTarget.value = '';
+          console.log(JSON.stringify(wordleAreaController.toWordleAreaModel()));
         } else {
           toast({
             title: 'Guess not in word list',
@@ -128,7 +142,6 @@ export default function WordleGame({
   };
 
   const handleReset = () => {
-    // TODO: Will need to reset score here
     wordleAreaController.guessHistory = [];
     coveyTownController.emitWordleAreaUpdate(wordleAreaController);
   };
@@ -216,7 +229,7 @@ export default function WordleGame({
             {gameBoard}
             {winLossDisplay}
           </Flex>
-          {/* TODO: score component here */}
+          Score: {score}
           {inputBox}
         </ModalBody>
         {winLossButtons}

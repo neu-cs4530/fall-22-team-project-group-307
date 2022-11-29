@@ -9,7 +9,7 @@ export default class WordleArea extends InteractableArea {
 
   private _maxGuesses = 6;
 
-  private _guessScores = [13, 8, 5, 3, 2, 1];
+  private _guessScores = [13, 8, 5, 3, 2, 1]; // TODO: Update this
 
   private _solution: string;
 
@@ -126,24 +126,6 @@ export default class WordleArea extends InteractableArea {
   }
 
   /**
-   * Adds a guess to this game.
-   * @param guess the full entered guess from the user
-   * @throws if the game is over, the guess is not a valid length, or the guess is not a valid word
-   */
-  public addGuess(guess: string) {
-    if (this.isGameWon() || this.isGameLost()) {
-      throw new Error('Guess cannot be made on a finished game');
-    } else if (guess.length !== this._wordLength) {
-      throw new Error(`Given guess is not of length ${this._wordLength} (length: ${guess.length})`);
-    } else if (!DataAccess.getAccess().isValidWord(guess)) {
-      throw new Error(`Given word '${guess}' is not a word in the dictionary`);
-    }
-
-    this.guessHistory.push(guess.toUpperCase());
-    this._currentScore = this._guessScores[this.guessHistory.length - 1];
-  }
-
-  /**
    * Removes a player from this wordle area.
    *
    * When the last player leaves, this method sets this area to inactive and
@@ -159,25 +141,38 @@ export default class WordleArea extends InteractableArea {
     }
   }
 
+  // TODO: Write JSDoc
+  private _calculateScore(): number {
+    let bonusPoints = 0;
+    this._guessHistory.forEach(eachGuess => {
+      for (let i = 0; i < eachGuess.length; i++) {
+        if (this._solution.includes(eachGuess[i])) {
+          bonusPoints += 25;
+        }
+      }
+    });
+    const isMoreThanZeroGuesses = this.guessHistory.length > 0;
+    return (
+      bonusPoints + (isMoreThanZeroGuesses ? this._guessScores[this.guessHistory.length - 1] : 0)
+    );
+  }
+
   /**
    * Updates the state of this WordleArea, setting the active state, players, and game state
    *
    * @param wordleArea updated model
    */
-  public updateModel({
-    isPlaying,
-    currentScore,
-    guessHistory,
-    occupantIDs,
-    mainPlayer,
-  }: WordleAreaModel) {
+  public updateModel({ isPlaying, guessHistory, occupantIDs, mainPlayer }: WordleAreaModel) {
     this._isPlaying = isPlaying;
-    this._currentScore = currentScore;
     this._guessHistory = guessHistory;
+    this._currentScore = this._calculateScore();
     this._isWon = this.isGameWon();
     this._isLost = this.isGameLost();
     this.occupantIDs = occupantIDs;
     this._mainPlayer = mainPlayer;
+
+    console.log(`Solution: ${this._solution}`);
+    this._emitAreaChanged();
   }
 
   /**
@@ -188,7 +183,7 @@ export default class WordleArea extends InteractableArea {
     return {
       id: this.id,
       isPlaying: this._isPlaying,
-      currentScore: this._currentScore,
+      currentScore: this._calculateScore(),
       guessHistory: this._guessHistory,
       isWon: this.isGameWon(),
       isLost: this.isGameLost(),
