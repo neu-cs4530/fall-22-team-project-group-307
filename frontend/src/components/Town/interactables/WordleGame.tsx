@@ -133,7 +133,7 @@ export default function WordleGame({
   let winLossButtons: JSX.Element = <></>;
   let gameBoard: JSX.Element = <Board guesses={guessHistory} />;
   let inputBox: JSX.Element = (
-      <FormControl isInvalid={isSymbolError || isNumberError}>
+    <FormControl isInvalid={isSymbolError || isNumberError}>
       <Input
         maxLength={5}
         value={input}
