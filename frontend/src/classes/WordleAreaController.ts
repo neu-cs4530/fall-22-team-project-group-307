@@ -12,6 +12,9 @@ export type WordleAreaEvents = {
   occupantsChange: (newOccupants: PlayerController[]) => void;
   playingChange: (newPlaying: boolean) => void;
   historyChange: (newHistory: string[]) => void;
+  solutionChange: (newSolution: string) => void;
+  spectatingChange: (newSpectating: boolean) => void;
+
 };
 
 /**
@@ -68,6 +71,23 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
     if (this._model.guessHistory !== newHistory) {
       this.emit('historyChange', newHistory);
       this._model.guessHistory = newHistory;
+    }
+  }
+
+  /**
+   * Gets the solution from the current wordle game.
+   */
+  public get solution() {
+    return this._model.solution;
+  }
+
+  /**
+   * Sets the solution from the current wordle game.
+   */
+  public set solution(newSolution: string) {
+    if (this._model.solution !== newSolution) {
+      this.emit('solutionChange', newSolution);
+      this._model.solution = newSolution;
     }
   }
 
@@ -165,6 +185,7 @@ export default class WordleAreaController extends (EventEmitter as new () => Typ
       isPlaying: this.isPlaying,
       currentScore: this.score,
       guessHistory: this.guessHistory,
+      solution: this.solution,
       isWon: this.isGameWon,
       isLost: this.isGameLost,
       occupantIDs: this.occupants.map(player => player.id),

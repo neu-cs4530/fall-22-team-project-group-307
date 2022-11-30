@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useInteractable, useWordleAreaController } from '../../../classes/TownController';
+import DataAccess from '../../../data/DataAccess';
 import useTownController from '../../../hooks/useTownController';
 import { WordleArea as WordleAreaModel } from '../../../types/CoveyTownSocket';
 import WordleAreaInteractable from './WordleArea';
@@ -59,6 +60,7 @@ export function CreateWordleModal({
         isPlaying: true,
         currentScore: 0,
         guessHistory: [],
+        solution: DataAccess.getAccess().getValidWord(5, true),
         isWon: false,
         isLost: false,
         occupantIDs: [],

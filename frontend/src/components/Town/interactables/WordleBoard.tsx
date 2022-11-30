@@ -8,6 +8,7 @@ interface GuessLetter {
 
 interface BoardProps {
   guesses: string[];
+  solution: string;
 }
 
 interface RowProps {
@@ -100,9 +101,9 @@ function Row({ guess }: RowProps): JSX.Element {
  * @prop {string[]} guesses - the guesses made by the player so far.
  * @returns the component.
  */
-export default function Board({ guesses }: BoardProps): JSX.Element {
+export default function Board({ guesses, solution }: BoardProps): JSX.Element {
   //TODO: add solution property to WordleArea so this isn't hard coded
-  const solutionArray = [...'GUESS']; // whenever this gets changed can we make the sol uppercase (will change backend to reflect this) -victor
+  const solutionArray = [...solution]; // whenever this gets changed can we make the sol uppercase (will change backend to reflect this) -victor
 
   const convertGuess = (toConvert: string | undefined) => {
     const converted: GuessLetter[] = new Array(5);
