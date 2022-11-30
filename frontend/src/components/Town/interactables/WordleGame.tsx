@@ -17,12 +17,24 @@ import {
 } from '@chakra-ui/react';
 import _ from 'lodash';
 import { default as React, useEffect, useState } from 'react';
+import { usePlayers } from '../../../classes/TownController';
 import WordleAreaController from '../../../classes/WordleAreaController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
 import DataAccess from '../../../data/DataAccess';
 
+/**
+ * Renders a modal representing the actual game of Wordle including the board and input box.
+ *
+ * Renders a new win/loss screen upon completion of game.
+ * If viewing player is a spectator, does not allow for guess submission or abiliity to restart.
+ *
+ * @prop {WordleAreaInteractable} wordleArea - interactable representing the associated wordle area.
+ * @prop {WordleAreaController} wordleAreaController - controller representing the associated wordle area.
+ * @prop {() => void} closeGame - function to call when closing modal housing the game.
+ * @returns the modal representing the game.
+ */
 export default function WordleGame({
   wordleArea,
   wordleAreaController,
@@ -34,21 +46,27 @@ export default function WordleGame({
 }): JSX.Element {
   const coveyTownController = useTownController();
   const [guessHistory, setGuessHistory] = useState(wordleAreaController.guessHistory);
-
   const [input, setInput] = useState('');
   const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) =>
     setInput(e.target.value);
-
   const specialCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
   const numberCharacters = /[0-9]/;
   const isSymbolError = specialCharacters.test(input);
   const isNumberError = numberCharacters.test(input);
   const isLengthError = input.length != 5;
 
+  const toast = useToast();
+  const solution = 'guess'; // TODO: Actually generate a random solution instead of hardcoding
+  const mainPlayerController = usePlayers().find(
+    eachPlayer => eachPlayer.id === wordleAreaController.mainPlayer,
+  );
+  const mainPlayerName = mainPlayerController
+    ? mainPlayerController.userName
+    : 'ERROR: Main player not found';
+
   useEffect(() => {
     const setHistory = (newHistory: string[]) => {
       if (newHistory !== guessHistory) {
-        console.log(newHistory);
         setGuessHistory(newHistory);
       }
     };
@@ -66,8 +84,7 @@ export default function WordleGame({
     }
   }, [coveyTownController, wordleArea]);
 
-  const toast = useToast();
-
+  // checks validity of guess submitted from KeyboardEvent, submits to guessHistory if valid
   const handleSubmit = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     const guess: string = ev.currentTarget.value;
     if (ev.key === 'Enter') {
