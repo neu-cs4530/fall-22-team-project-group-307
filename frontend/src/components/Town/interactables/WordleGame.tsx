@@ -45,6 +45,7 @@ export default function WordleGame({
 }): JSX.Element {
   const coveyTownController = useTownController();
   const [guessHistory, setGuessHistory] = useState(wordleAreaController.guessHistory);
+  const [score, setScore] = useState(wordleAreaController.score);
   const [input, setInput] = useState('');
   const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) =>
     setInput(e.target.value);
@@ -76,6 +77,18 @@ export default function WordleGame({
   }, [wordleAreaController, guessHistory]);
 
   useEffect(() => {
+    const setCurrScore = (newScore: number) => {
+      if (newScore !== score) {
+        setScore(newScore);
+      }
+    };
+    wordleAreaController.addListener('scoreChange', setCurrScore);
+    return () => {
+      wordleAreaController.removeListener('scoreChange', setCurrScore);
+    };
+  }, [wordleAreaController, score]);
+
+  useEffect(() => {
     if (wordleArea) {
       coveyTownController.pause();
     } else {
@@ -85,7 +98,7 @@ export default function WordleGame({
 
   // checks validity of guess submitted from KeyboardEvent, submits to guessHistory if valid
   const handleSubmit = (ev: React.KeyboardEvent<HTMLInputElement>) => {
-    const guess: string = ev.currentTarget.value;
+    const guess: string = ev.currentTarget.value.toLowerCase();
     if (ev.key === 'Enter') {
       if (isSymbolError || isNumberError) {
         toast({
@@ -128,8 +141,8 @@ export default function WordleGame({
   };
 
   const handleReset = () => {
-    // TODO: Will need to reset score here
     wordleAreaController.guessHistory = [];
+    // TODO: the solution should also reset here.
     coveyTownController.emitWordleAreaUpdate(wordleAreaController);
   };
 
@@ -216,7 +229,7 @@ export default function WordleGame({
             {gameBoard}
             {winLossDisplay}
           </Flex>
-          {/* TODO: score component here */}
+          Score: {score}
           {inputBox}
         </ModalBody>
         {winLossButtons}
