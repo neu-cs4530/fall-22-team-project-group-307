@@ -1,7 +1,5 @@
 import { mock, mockClear } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
-import { TokenListInstanceCreateOptions } from 'twilio/lib/rest/api/v2010/account/token';
-import { BooleanLiteral } from 'typescript';
 import Player from '../lib/Player';
 import { getLastEmittedEvent } from '../TestUtils';
 import { TownEmitter } from '../types/CoveyTownSocket';
@@ -174,6 +172,7 @@ describe('WordleArea', () => {
     it('Removes the player from the list of occupants and emits an interactableUpdate event', () => {
       // Add another player so that we are not also testing what happens when the last player leaves
       const extraPlayer = new Player(nanoid(), mock<TownEmitter>());
+      testArea.solution = solution;
       testArea.add(extraPlayer);
       testArea.remove(newPlayer);
 
@@ -184,6 +183,7 @@ describe('WordleArea', () => {
         isPlaying,
         currentScore,
         guessHistory,
+        solution,
         isWon: false,
         isLost: false,
         occupantIDs: testArea.occupantsByID,
@@ -196,6 +196,7 @@ describe('WordleArea', () => {
       expect(lastEmittedMovement.location.interactableID).toBeUndefined();
     });
     it('Sets the isPlaying property to false when the last occupant leaves', () => {
+      testArea.solution = solution;
       testArea.remove(newPlayer);
       const lastEmittedUpdate = getLastEmittedEvent(townEmitter, 'interactableUpdate');
       expect(lastEmittedUpdate).toEqual({
@@ -227,12 +228,14 @@ describe('WordleArea', () => {
     expect(testArea.guessHistory).toStrictEqual(['FIRST']);
   });
   test('toModel returns the ID, isPlaying, currentScore, and guessHistory', () => {
+    testArea.solution = solution;
     const model = testArea.toModel();
     expect(model).toEqual({
       id,
       isPlaying,
       currentScore,
       guessHistory,
+      solution,
       isWon: false,
       isLost: false,
       occupantIDs: model.occupantIDs,
