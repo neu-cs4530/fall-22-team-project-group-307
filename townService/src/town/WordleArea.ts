@@ -143,10 +143,6 @@ export default class WordleArea extends InteractableArea {
     this._currentScore = this._guessScores[this.guessHistory.length - 1];
   }
 
-  public isValidGuess(guess: string) {
-    return guess.length === this._wordLength && DataAccess.getAccess().isValidWord(guess);
-  }
-
   /**
    * Removes a player from this wordle area.
    *

@@ -549,6 +549,7 @@ describe('Town', () => {
             isPlaying: false,
             currentScore: 0,
             guessHistory: [],
+            solution: 'TESTS',
             isWon: false,
             isLost: false,
             occupantIDs: [],
@@ -696,6 +697,7 @@ describe('Town', () => {
           isPlaying: false,
           currentScore: 0,
           guessHistory: [],
+          solution: 'tests',
           isWon: false,
           isLost: false,
           occupantIDs: [],
@@ -710,6 +712,7 @@ describe('Town', () => {
             isPlaying: false,
             currentScore: 0,
             guessHistory: [],
+            solution: 'tests',
             isWon: false,
             isLost: false,
             occupantIDs: [],
@@ -725,12 +728,14 @@ describe('Town', () => {
         expect(wordleArea.occupantsByID).toEqual([player.id]);
       });
       it('Should emit an interactableUpdate message', () => {
+        const wordleArea = town.getInteractable('WordleEx1') as WordleArea;
         const lastEmittedUpdate = getLastEmittedEvent(townEmitter, 'interactableUpdate');
         expect(lastEmittedUpdate).toEqual({
           id: 'WordleEx1',
           isPlaying: false,
           currentScore: 0,
           guessHistory: [],
+          solution: wordleArea.solution,
           isWon: false,
           isLost: false,
           occupantIDs: [playerTestData.player?.id],
