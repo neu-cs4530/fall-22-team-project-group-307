@@ -1,4 +1,4 @@
-import { Center, HStack, Text, VStack } from '@chakra-ui/react';
+import { Center, HStack, keyframes, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 interface GuessLetter {
@@ -21,6 +21,9 @@ interface TileProps {
   order?: number;
 }
 
+// the border color as well as the gray color
+const DEFAULT_GREY = 'gray.700';
+
 /**
  * Renders a component representing a populated tile in a game of Wordle.
  *
@@ -28,16 +31,55 @@ interface TileProps {
  * @prop {string} color - color of the tile.
  * @returns {JSX.Element} the component representing the tile.
  */
-function Tile({ letter, color }: TileProps): JSX.Element {
+function Tile({ letter, color, order }: TileProps): JSX.Element {
+  // the flip animation, specifying the state of the tile at certain degrees of turn
+  const flip = keyframes`
+    0% {
+      transform: rotateX(0);
+      background-color: transparent;
+      border-color: ${DEFAULT_GREY};
+    }
+    45% {
+      transform: rotateX(90deg);
+      background-color: transparent;
+      border-color: ${DEFAULT_GREY}
+    }
+    55% {
+      transform: rotateX(90deg);
+      background-color: ${color};
+      border-color: ${DEFAULT_GREY};
+    }
+    100% {
+      transform: rotateX(0);
+      background-color: ${color};
+      border-color: ${DEFAULT_GREY};
+  }`;
+
+  // initiate animation as undefined
+  let animation = undefined;
+
+  // a color assignment indicates the user has pressed ENTER, so assign animation
+  if (color === 'gray' || color === 'green' || color === 'yellow') {
+    animation = `${flip} 0.8s ease`;
+  }
+
+  // animation delay so tiles don't animate simultaneously
+  let delay = undefined;
+  if (order) {
+    delay = `${0.4 * order}s`;
+  }
+
+  // return a tile with the given animation to change its background
   return (
     <Center
-      w={['50px', '55px', '60px']}
-      h={['50px', '55px', '60px']}
+      w={['60px', '60px', '60px']}
+      h={['60px', '60px', '60px']}
       border='1px'
-      backgroundColor={color}
-      borderColor='gray.700'
-      userSelect='none'>
-      <Text fontWeight={700} fontSize='x-large'>
+      borderColor={DEFAULT_GREY}
+      animation={animation}
+      userSelect='none'
+      sx={{ animationDelay: delay, animationFillMode: 'forwards' }}>
+      <Text fontWeight={750} fontSize='3xl'>
         {letter.toUpperCase()}
       </Text>
     </Center>
@@ -53,10 +95,10 @@ function Tile({ letter, color }: TileProps): JSX.Element {
 function EmptyTile({ showCursor }: { showCursor?: boolean }): JSX.Element {
   return (
     <Center
-      w={['50px', '55px', '60px']}
-      h={['50px', '55px', '60px']}
+      w={['60px', '60px', '60px']}
+      h={['60px', '60px', '60px']}
       border='1px'
-      borderColor={'gray.700'}
+      borderColor={DEFAULT_GREY}
       userSelect='none'>
       {showCursor && <Text fontSize='x-large'>_</Text>}
     </Center>
@@ -88,7 +130,7 @@ function Row({ guess }: RowProps): JSX.Element {
   return (
     <HStack>
       {guess.map((letterObject, index) => (
-        <Tile key={index} letter={letterObject.letter} color={letterObject.color} />
+        <Tile key={index} letter={letterObject.letter} color={letterObject.color} order={index} />
       ))}
     </HStack>
   );
@@ -113,7 +155,7 @@ export default function Board({ guesses, solution }: BoardProps): JSX.Element {
       solutionArray.forEach(() => {
         converted.push({
           letter: '',
-          color: 'gray',
+          color: 'transparent',
         });
       });
       return converted;
