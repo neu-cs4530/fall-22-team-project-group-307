@@ -14,7 +14,6 @@ export type WordleAreaEvents = {
   historyChange: (newHistory: string[]) => void;
   solutionChange: (newSolution: string) => void;
   spectatingChange: (newSpectating: boolean) => void;
-
 };
 
 /**

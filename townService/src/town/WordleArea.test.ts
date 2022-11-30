@@ -17,7 +17,6 @@ describe('WordleArea', () => {
   const guessHistory = ['AUDIO', 'STONE'];
   const solution = 'RIGHT';
 
-
   beforeEach(() => {
     mockClear(townEmitter);
     testArea = new WordleArea(
@@ -48,7 +47,7 @@ describe('WordleArea', () => {
       testAreaBox,
       townEmitter,
     );
-    newPlayer = new Player(newPlayerID, mock<TownEmitter>());
+    newPlayer = new Player(nanoid(), mock<TownEmitter>());
     testArea.add(newPlayer);
   });
 
@@ -143,6 +142,7 @@ describe('WordleArea', () => {
         isLost: false,
         occupantIDs: ['occupant1'],
         mainPlayer: 'occupant1',
+        solution: 'GUESS',
       };
     });
     it('Sets the active state, guess history, occupants, and main player and emits an interactableUpdate event', () => {

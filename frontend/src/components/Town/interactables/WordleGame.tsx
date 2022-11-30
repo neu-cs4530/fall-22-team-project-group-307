@@ -88,7 +88,6 @@ export default function WordleGame({
       wordleAreaController.removeListener('solutionChange', setSol);
     };
   }, [wordleAreaController, solution]);
-  
   useEffect(() => {
     const setCurrScore = (newScore: number) => {
       if (newScore !== score) {
@@ -100,7 +99,6 @@ export default function WordleGame({
       wordleAreaController.removeListener('scoreChange', setCurrScore);
     };
   }, [wordleAreaController, score]);
-
 
   useEffect(() => {
     if (wordleArea) {
@@ -130,7 +128,7 @@ export default function WordleGame({
       }
 
       if (!isLengthError && !isSymbolError && !isNumberError) {
-        const inWordList = DataAccess.getAccess().isValidWord(guess); // TODO: Actually check to see if guess is in word list
+        const inWordList = DataAccess.getAccess().isValidWord(guess);
 
         if (inWordList) {
           wordleAreaController.guessHistory = [...guessHistory, guess.toUpperCase()];
