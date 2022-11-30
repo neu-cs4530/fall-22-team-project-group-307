@@ -22,6 +22,7 @@ import WordleAreaController from '../../../classes/WordleAreaController';
 import useTownController from '../../../hooks/useTownController';
 import WordleAreaInteractable from './WordleArea';
 import Board from './WordleBoard';
+import DataAccess from '../../../data/DataAccess';
 
 /**
  * Renders a modal representing the actual game of Wordle including the board and input box.
@@ -45,6 +46,7 @@ export default function WordleGame({
 }): JSX.Element {
   const coveyTownController = useTownController();
   const [guessHistory, setGuessHistory] = useState(wordleAreaController.guessHistory);
+  const [solution, setSolution] = useState(wordleAreaController.solution);
   const [input, setInput] = useState('');
   const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) =>
     setInput(e.target.value);
@@ -55,7 +57,6 @@ export default function WordleGame({
   const isLengthError = input.length != 5;
 
   const toast = useToast();
-  const solution = 'guess'; // TODO: Actually generate a random solution instead of hardcoding
   const mainPlayerController = usePlayers().find(
     eachPlayer => eachPlayer.id === wordleAreaController.mainPlayer,
   );
@@ -74,6 +75,18 @@ export default function WordleGame({
       wordleAreaController.removeListener('historyChange', setHistory);
     };
   }, [wordleAreaController, guessHistory]);
+
+  useEffect(() => {
+    const setSol = (newSolution: string) => {
+      if (newSolution !== solution) {
+        setSolution(newSolution);
+      }
+    };
+    wordleAreaController.addListener('solutionChange', setSol);
+    return () => {
+      wordleAreaController.removeListener('solutionChange', setSol);
+    };
+  }, [wordleAreaController, solution]);
 
   useEffect(() => {
     if (wordleArea) {
@@ -103,10 +116,10 @@ export default function WordleGame({
       }
 
       if (!isLengthError && !isSymbolError && !isNumberError) {
-        const inWordList = true; // TODO: Actually check to see if guess is in word list
+        const inWordList = DataAccess.getAccess().isValidWord(guess); // TODO: Actually check to see if guess is in word list
 
         if (inWordList) {
-          wordleAreaController.guessHistory = [...guessHistory, guess];
+          wordleAreaController.guessHistory = [...guessHistory, guess.toUpperCase()];
           coveyTownController.emitWordleAreaUpdate(wordleAreaController);
           setInput('');
           ev.currentTarget.value = '';
@@ -128,7 +141,7 @@ export default function WordleGame({
   };
 
   const handleReset = () => {
-    // TODO: Will need to reset score here
+    wordleAreaController.solution = DataAccess.getAccess().getValidWord(5, true);
     wordleAreaController.guessHistory = [];
     coveyTownController.emitWordleAreaUpdate(wordleAreaController);
   };
@@ -137,7 +150,9 @@ export default function WordleGame({
   // assuming current view is mainPlayer and game has not been won or lost yet
   let winLossDisplay: JSX.Element = <></>;
   let winLossButtons: JSX.Element = <></>;
-  let gameBoard: JSX.Element = <Board guesses={guessHistory} />;
+  let gameBoard: JSX.Element = (
+    <Board guesses={guessHistory} solution={wordleAreaController.solution} />
+  );
   let inputBox: JSX.Element = (
     <FormControl isInvalid={isSymbolError || isNumberError}>
       <Input
@@ -167,11 +182,11 @@ export default function WordleGame({
 
   // if win/loss condition has been satisified, removes gameBoard, inputBox and renders winLossDisplay, winLossButtons*
   // if spectator, removes playAgainButton
-  if (_.includes(guessHistory, solution) || guessHistory.length >= 6) {
-    const boxColor = _.includes(guessHistory, solution) ? 'green' : 'tomato';
-    const boxText = _.includes(guessHistory, solution)
+  if (_.includes(guessHistory, wordleAreaController.solution) || guessHistory.length >= 6) {
+    const boxColor = _.includes(guessHistory, wordleAreaController.solution) ? 'green' : 'tomato';
+    const boxText = _.includes(guessHistory, wordleAreaController.solution)
       ? `${isMainPlayer ? 'You' : mainPlayerName} won! :)`
-      : `${isMainPlayer ? 'You' : mainPlayerName} lost. :(`;
+      : `${isMainPlayer ? 'You' : mainPlayerName} lost. The correct answer was ${solution}. :(`;
 
     winLossDisplay = (
       <Box bg={boxColor} w='100%' p={4} color='white'>

@@ -74,6 +74,7 @@ export interface WordleArea {
   isPlaying: boolean;
   currentScore: number;
   guessHistory: string[];
+  solution: string,
   isWon: boolean;
   isLost: boolean;
   occupantIDs: string[];

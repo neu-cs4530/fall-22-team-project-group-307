@@ -103,7 +103,7 @@ export default class WordleArea extends InteractableArea {
     this._guessHistory = guessHistory;
     this._mainPlayer = undefined;
     this._spectatorPlayers = [];
-    this._solution = DataAccess.getAccess().getValidWord(5);
+    this._solution = DataAccess.getAccess().getValidWord(5, true);
     this._isWon = this.isGameWon();
     this._isLost = this.isGameLost();
     this.occupantIDs = occupantIDs;
@@ -190,6 +190,7 @@ export default class WordleArea extends InteractableArea {
       isPlaying: this._isPlaying,
       currentScore: this._currentScore,
       guessHistory: this._guessHistory,
+      solution: this._solution,
       isWon: this.isGameWon(),
       isLost: this.isGameLost(),
       occupantIDs: this._occupants.map(player => player.id),
@@ -215,6 +216,7 @@ export default class WordleArea extends InteractableArea {
         id: name,
         currentScore: 0,
         guessHistory: [],
+        solution: DataAccess.getAccess().getValidWord(5, true),
         isWon: false,
         isLost: false,
         occupantIDs: [],

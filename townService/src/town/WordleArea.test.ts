@@ -15,11 +15,21 @@ describe('WordleArea', () => {
   const isPlaying = true;
   const currentScore = 8;
   const guessHistory = ['AUDIO', 'STONE'];
+  const solution = 'RIGHT';
 
   beforeEach(() => {
     mockClear(townEmitter);
     testArea = new WordleArea(
-      { id, isPlaying, currentScore, guessHistory, isWon: false, isLost: false, occupantIDs: [] },
+      {
+        id,
+        isPlaying,
+        currentScore,
+        guessHistory,
+        solution,
+        isWon: false,
+        isLost: false,
+        occupantIDs: [],
+      },
       testAreaBox,
       townEmitter,
     );
@@ -29,6 +39,7 @@ describe('WordleArea', () => {
         isPlaying: true,
         currentScore,
         guessHistory: [],
+        solution,
         isWon: false,
         isLost: false,
         occupantIDs: [],
@@ -171,9 +182,11 @@ describe('WordleArea', () => {
         isPlaying,
         currentScore,
         guessHistory,
+        solution: testArea.solution,
         isWon: false,
         isLost: false,
         occupantIDs: testArea.occupantsByID,
+        mainPlayer: testArea.mainPlayer,
       });
     });
     it("Clears the player's conversationLabel and emits an update for their location", () => {
@@ -190,9 +203,11 @@ describe('WordleArea', () => {
         isPlaying: false,
         currentScore,
         guessHistory,
+        solution: testArea.solution,
         isWon: false,
         isLost: false,
         occupantIDs: [],
+        mainPlayer: testArea.mainPlayer,
       });
       expect(testArea.isPlaying).toEqual(false);
     });
@@ -203,6 +218,7 @@ describe('WordleArea', () => {
       isPlaying: false,
       currentScore: 2,
       guessHistory: ['FIRST'],
+      solution: 'OTHER',
       isWon: false,
       isLost: false,
       occupantIDs: [],
@@ -218,9 +234,11 @@ describe('WordleArea', () => {
       isPlaying,
       currentScore,
       guessHistory,
+      solution: testArea.solution,
       isWon: false,
       isLost: false,
       occupantIDs: model.occupantIDs,
+      mainPlayer: testArea.mainPlayer,
     });
   });
 });
