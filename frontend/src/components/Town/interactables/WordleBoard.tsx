@@ -68,6 +68,7 @@ function Tile({ letter, color, order }: TileProps): JSX.Element {
     delay = `${0.4 * order}s`;
   }
 
+  // return a tile with the given animation to change its background
   return (
     <Center
       w={['60px', '60px', '60px']}
@@ -77,7 +78,7 @@ function Tile({ letter, color, order }: TileProps): JSX.Element {
       animation={animation}
       userSelect='none'
       sx={{ animationDelay: delay, animationFillMode: 'forwards' }}>
-      <Text fontWeight={800} fontSize='x-large'>
+      <Text fontWeight={750} fontSize='3xl'>
         {letter.toUpperCase()}
       </Text>
     </Center>
