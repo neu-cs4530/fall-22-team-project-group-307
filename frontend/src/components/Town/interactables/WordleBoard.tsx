@@ -102,7 +102,6 @@ function Row({ guess }: RowProps): JSX.Element {
  * @returns the component.
  */
 export default function Board({ guesses }: BoardProps): JSX.Element {
-  //TODO: add solution property to WordleArea so this isn't hard coded
   const solutionArray = [...solution]; // whenever this gets changed can we make the sol uppercase (will change backend to reflect this) -victor
 
   const convertGuess = (toConvert: string | undefined) => {
