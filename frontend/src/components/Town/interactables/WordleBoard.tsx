@@ -21,6 +21,13 @@ interface TileProps {
   order?: number;
 }
 
+/**
+ * Renders a component representing a populated tile in a game of Wordle.
+ *
+ * @prop {string} letter - letter of the tile.
+ * @prop {string} color - color of the tile.
+ * @returns {JSX.Element} the component representing the tile.
+ */
 function Tile({ letter, color }: TileProps): JSX.Element {
   return (
     <Center
@@ -37,6 +44,12 @@ function Tile({ letter, color }: TileProps): JSX.Element {
   );
 }
 
+/**
+ * Renders a component representing an empty tile in a game of Wordle.
+ *
+ * @prop {boolean} showCursor - flag for... TODO
+ * @returns {JSX.Element} the component representing the tile.
+ */
 function EmptyTile({ showCursor }: { showCursor?: boolean }): JSX.Element {
   return (
     <Center
@@ -50,6 +63,13 @@ function EmptyTile({ showCursor }: { showCursor?: boolean }): JSX.Element {
   );
 }
 
+/**
+ * Renders a row of tiles representing the supplied guess.
+ * If supplied guess is undefined, returns a row of empty tiles.
+ *
+ * @prop {GuessLetter[] | undefined} guess - the letters that comprise the guess.
+ * @returns the component.
+ */
 function Row({ guess }: RowProps): JSX.Element {
   // if there's no guess, return a row of empty tiles
   if (guess === undefined) {
@@ -74,8 +94,14 @@ function Row({ guess }: RowProps): JSX.Element {
   );
 }
 
-export default function Board({ guesses, solution }: BoardProps): JSX.Element {
-  //TODO: add solution property to WordleArea so this isn't hard coded
+/**
+ * Renders a grid of tiles representing the game board.
+ * Guesses render in proper color based on proximity to solution
+ *
+ * @prop {string[]} guesses - the guesses made by the player so far.
+ * @returns the component.
+ */
+export default function Board({ guesses }: BoardProps): JSX.Element {
   const solutionArray = [...solution]; // whenever this gets changed can we make the sol uppercase (will change backend to reflect this) -victor
 
   const convertGuess = (toConvert: string | undefined) => {
